@@ -1,4 +1,6 @@
 const express = require('express');
+const path = require('path');
+const fs = require('fs');
 const cors = require('cors');
 const morgan = require('morgan');
 const config = require('./config');
@@ -42,8 +44,18 @@ app.use('/api', (req, res, next) => {
   authMiddleware(req, res, next);
 });
 
-// 业务路由（纯 API：前端由独立 Vite 工程提供，见 ../web）
+// 业务路由
 app.use('/api', routes);
+
+// 生产源码部署：前端已构建(web/dist 存在)时，由后端托管静态资源 + SPA 回退
+// （一个进程同时提供前端+API；dist 不存在时为纯 API，前端走 Vite 代理）
+if (fs.existsSync(config.webDist)) {
+  app.use(express.static(config.webDist));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(config.webDist, 'index.html'));
+  });
+}
 
 // 404 + 统一错误处理
 app.use(notFound);

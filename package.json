@@ -8,6 +8,8 @@
     "install:all": "npm install && cd server && npm install && cd ../web && npm install",
     "init-db": "cd server && npm run init-db",
     "build:web": "cd web && npm run build",
+    "start": "cd server && npm start",
+    "prod": "npm run build:web && cd server && npm start",
     "test": "cd server && npm test",
     "lint": "cd server && npm run lint"
   },

@@ -19,6 +19,7 @@ const config = {
     path: process.env.DB_PATH || path.join(SERVER_DIR, 'data', 'zhuomeng.db'),
   },
   publicDir: process.env.PUBLIC_DIR || path.join(PROJECT_DIR, 'public'),
+  webDist: process.env.WEB_DIST || path.join(PROJECT_DIR, 'web', 'dist'),
   cors: {
     origins: (process.env.CORS_ORIGINS || 'http://localhost:8080')
       .split(',')
