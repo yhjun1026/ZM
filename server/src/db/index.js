@@ -1,6 +1,11 @@
 const Database = require('better-sqlite3');
+const path = require('path');
+const fs = require('fs');
 const config = require('../config');
 const logger = require('../utils/logger');
+
+// 确保数据目录存在（fresh clone 时 server/data 可能不存在）
+fs.mkdirSync(path.dirname(config.db.path), { recursive: true });
 
 const db = new Database(config.db.path);
 db.pragma('journal_mode = WAL');

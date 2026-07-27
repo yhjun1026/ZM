@@ -1,8 +1,11 @@
 const winston = require('winston');
 const path = require('path');
+const fs = require('fs');
 const config = require('../config');
 
 const logDir = path.resolve(__dirname, '../../logs');
+// 确保日志目录存在
+fs.mkdirSync(logDir, { recursive: true });
 
 const logger = winston.createLogger({
   level: config.isProd ? 'info' : 'debug',
