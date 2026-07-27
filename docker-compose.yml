@@ -1,0 +1,21 @@
+services:
+  api:
+    build: ./server
+    container_name: zhuomeng-api
+    expose:
+      - "8080"
+    volumes:
+      - ./server/data:/app/data
+      - ./server/logs:/app/logs
+    env_file:
+      - ./server/.env
+    restart: unless-stopped
+
+  web:
+    build: ./web
+    container_name: zhuomeng-web
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    restart: unless-stopped

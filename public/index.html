@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="卓盟智办公">
+    <meta name="description" content="四川卓盟科技有限公司智能办公管理平台">
+    <meta name="application-name" content="卓盟智办公">
+    <title>卓盟智办公 - 四川卓盟科技有限公司</title>
+    <link rel="manifest" href="mobile/manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="mobile/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="mobile/icons/icon-192x192.png">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.min.css">
+    <script src="vendor/chart.js/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- 登录页 -->
+    <div id="loginPage" class="login-page">
+        <div class="login-container">
+            <div class="login-left">
+                <div class="login-brand">
+                    <div class="brand-logo">
+                        <i class="fa fa-cube"></i>
+                    </div>
+                    <h1>卓盟智办公</h1>
+                    <p>四川卓盟科技有限公司 · 智能办公管理平台</p>
+                </div>
+                <div class="login-features">
+                    <div class="feature-item">
+                        <i class="fa fa-map-marker"></i>
+                        <span>智能外勤打卡，精准定位管理</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa fa-file-text-o"></i>
+                        <span>高效工作汇报，团队协作无忧</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fa fa-bar-chart"></i>
+                        <span>数据驱动决策，业绩一目了然</span>
+                    </div>
+                </div>
+            </div>
+            <div class="login-right">
+                <div class="login-form-wrapper">
+                    <h2>欢迎登录</h2>
+                    <p class="login-subtitle">请使用您的企业账号登录</p>
+                    <form id="loginForm" class="login-form">
+                        <div class="form-group">
+                            <label>账号</label>
+                            <div class="input-wrap">
+                                <i class="fa fa-user"></i>
+                                <input type="text" id="loginUser" placeholder="请输入工号或手机号" value="ZM001">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>密码</label>
+                            <div class="input-wrap">
+                                <i class="fa fa-lock"></i>
+                                <input type="password" id="loginPass" placeholder="请输入密码" value="123456">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label class="remember-label">
+                                <input type="checkbox" checked> 记住我
+                            </label>
+                            <a href="#" class="forgot-link">忘记密码？</a>
+                        </div>
+                        <button type="submit" class="btn-login">登 录</button>
+                    </form>
+                    <div class="login-tip">
+                        <i class="fa fa-info-circle"></i>
+                        演示账号：ZM001 / 密码：123456
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主应用 -->
+    <div id="mainApp" class="main-app" style="display:none;">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i class="fa fa-cube"></i>
+                    <span>卓盟智办公</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <!-- 快捷入口 -->
+                <div class="nav-group">
+                    <div class="nav-group-title">快捷入口</div>
+                    <a class="nav-item active" data-view="dashboard">
+                        <i class="fa fa-tachometer"></i>
+                        <span>工作台</span>
+                    </a>
+                    <a class="nav-item" data-view="cockpit">
+                        <i class="fa fa-dashboard"></i>
+                        <span>智能驾驶舱</span>
+                    </a>
+                </div>
+
+                <!-- 考勤办公 -->
+                <div class="nav-group">
+                    <div class="nav-group-title">考勤办公</div>
+                    <a class="nav-item" data-view="checkin">
+                        <i class="fa fa-map-marker"></i>
+                        <span>外勤打卡</span>
+                    </a>
+                    <a class="nav-item" data-view="reports">
+                        <i class="fa fa-file-text-o"></i>
+                        <span>工作汇报</span>
+                        <span class="nav-badge" id="reportBadge">3</span>
+                    </a>
+                    <a class="nav-item" data-view="leave">
+                        <i class="fa fa-calendar-times-o"></i>
+                        <span>假期申请</span>
+                    </a>
+                    <a class="nav-item" data-view="expense">
+                        <i class="fa fa-money"></i>
+                        <span>费用报销</span>
+                    </a>
+                </div>
+
+                <!-- 业务管理 -->
+                <div class="nav-group">
+                    <div class="nav-group-title">业务管理</div>
+                    <a class="nav-item" data-view="customers">
+                        <i class="fa fa-users"></i>
+                        <span>客户管理</span>
+                    </a>
+                    <a class="nav-item" data-view="contract">
+                        <i class="fa fa-file-contract"></i>
+                        <span>合同审批</span>
+                        <span class="nav-badge">2</span>
+                    </a>
+                    <a class="nav-item" data-view="purchase">
+                        <i class="fa fa-cart-plus"></i>
+                        <span>采购管理</span>
+                    </a>
+                    <a class="nav-item" data-view="project">
+                        <i class="fa fa-folder-open-o"></i>
+                        <span>项目管理</span>
+                        <span class="nav-badge" id="projectBadge">2</span>
+                    </a>
+                    <a class="nav-item" data-view="businesstrip">
+                        <i class="fa fa-plane"></i>
+                        <span>出差申请</span>
+                    </a>
+                    <a class="nav-item" data-view="sales">
+                        <i class="fa fa-line-chart"></i>
+                        <span>销售统计</span>
+                    </a>
+                </div>
+
+                <!-- 人事行政 -->
+                <div class="nav-group">
+                    <div class="nav-group-title">人事行政</div>
+                    <a class="nav-item" data-view="hr">
+                        <i class="fa fa-id-card-o"></i>
+                        <span>人事管理</span>
+                    </a>
+                    <a class="nav-item" data-view="department">
+                        <i class="fa fa-sitemap"></i>
+                        <span>部门管理</span>
+                    </a>
+                    <a class="nav-item" data-view="team">
+                        <i class="fa fa-users"></i>
+                        <span>团队管理</span>
+                    </a>
+                    <a class="nav-item" data-view="permission">
+                        <i class="fa fa-shield"></i>
+                        <span>权限管理</span>
+                    </a>
+                </div>
+
+                <!-- 财务数据 -->
+                <div class="nav-group">
+                    <div class="nav-group-title">财务数据</div>
+                    <a class="nav-item" data-view="finance">
+                        <i class="fa fa-cny"></i>
+                        <span>财务管理</span>
+                    </a>
+                    <a class="nav-item" data-view="statistics">
+                        <i class="fa fa-bar-chart"></i>
+                        <span>统计分析</span>
+                    </a>
+                </div>
+            </nav>
+            <div class="sidebar-footer">
+                <a class="nav-item" data-view="settings">
+                    <i class="fa fa-cog"></i>
+                    <span>系统设置</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部栏 -->
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button class="btn-toggle" id="toggleSidebar">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                    <div class="breadcrumb" id="breadcrumb">
+                        <span>工作台</span>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="topbar-date" id="topbarDate"></div>
+                    <div class="topbar-icon-btn" title="消息通知">
+                        <i class="fa fa-bell-o"></i>
+                        <span class="dot-badge"></span>
+                    </div>
+                    <div class="topbar-icon-btn" title="搜索">
+                        <i class="fa fa-search"></i>
+                    </div>
+                    <div class="user-menu" id="userMenu">
+                        <div class="user-avatar" id="userAvatar">李</div>
+                        <div class="user-info">
+                            <span class="user-name" id="userName">李明远</span>
+                            <span class="user-role">销售部 · 区域经理</span>
+                        </div>
+                        <i class="fa fa-angle-down"></i>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="#"><i class="fa fa-user-o"></i> 个人中心</a>
+                            <a href="#"><i class="fa fa-cog"></i> 账号设置</a>
+                            <a href="#" id="logoutBtn"><i class="fa fa-sign-out"></i> 退出登录</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 视图容器 -->
+            <div class="view-container" id="viewContainer">
+                <!-- 动态渲染 -->
+            </div>
+        </main>
+    </div>
+
+    <!-- 打卡弹窗 -->
+    <div class="modal-overlay" id="checkinModal">
+        <div class="modal-box modal-lg">
+            <div class="modal-header">
+                <h3 id="checkinModalTitle">外勤签到</h3>
+                <button class="modal-close" onclick="closeModal('checkinModal')"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="checkinModalBody">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 汇报表单弹窗 -->
+    <div class="modal-overlay" id="reportModal">
+        <div class="modal-box modal-lg">
+            <div class="modal-header">
+                <h3 id="reportModalTitle">新建工作汇报</h3>
+                <button class="modal-close" onclick="closeModal('reportModal')"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="reportModalBody">
+                <!-- 动态内容 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 客户详情弹窗 -->
+    <div class="modal-overlay" id="customerModal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="customerModalTitle">客户详情</h3>
+                <button class="modal-close" onclick="closeModal('customerModal')"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="customerModalBody"></div>
+        </div>
+    </div>
+
+    <!-- 通用弹窗 -->
+    <div class="modal-overlay" id="genericModal">
+        <div class="modal-box modal-lg">
+            <div class="modal-header">
+                <h3 id="genericModalTitle">操作</h3>
+                <button class="modal-close" onclick="closeModal('genericModal')"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="genericModalBody"></div>
+        </div>
+    </div>
+
+    <!-- 合同详情弹窗 -->
+    <div class="modal-overlay" id="contractModal">
+        <div class="modal-box modal-lg">
+            <div class="modal-header">
+                <h3 id="contractModalTitle">合同详情</h3>
+                <button class="modal-close" onclick="closeModal('contractModal')"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="modal-body" id="contractModalBody"></div>
+        </div>
+    </div>
+
+    <!-- Toast 提示 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- PWA安装提示 -->
+    <div id="pwaInstallBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#2563eb;color:#fff;padding:12px 20px;z-index:9999;box-shadow:0 -4px 12px rgba(37,99,235,0.3);transition:transform 0.3s;">
+        <div style="display:flex;align-items:center;justify-content:space-between;max-width:1200px;margin:0 auto;">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <img src="mobile/icons/icon-72x72.png" alt="卓盟智办公" style="width:40px;height:40px;border-radius:8px;">
+                <div>
+                    <div style="font-weight:700;font-size:14px;">安装卓盟智办公到手机</div>
+                    <div style="font-size:12px;opacity:0.9;">离线可用，随时打卡汇报，像原生应用一样体验</div>
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+                <button id="pwaInstallBtn" style="background:#fff;color:#2563eb;border:none;padding:8px 20px;border-radius:8px;font-weight:700;font-size:14px;cursor:pointer;">立即安装</button>
+                <button id="pwaDismissBtn" style="background:transparent;color:#fff;border:1px solid rgba(255,255,255,0.5);padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer;">稍后</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+    /* ===== PWA Service Worker 注册 ===== */
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('mobile/sw.js')
+                .then(reg => console.log('[PWA] Service Worker 注册成功:', reg.scope))
+                .catch(err => console.log('[PWA] Service Worker 注册失败:', err));
+        });
+    }
+
+    /* ===== PWA安装提示 ===== */
+    let deferredPrompt = null;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        // 显示安装提示
+        const banner = document.getElementById('pwaInstallBanner');
+        if (banner) banner.style.display = 'block';
+    });
+
+    document.getElementById('pwaInstallBtn')?.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log('[PWA] 用户选择:', outcome);
+            deferredPrompt = null;
+        }
+        document.getElementById('pwaInstallBanner').style.display = 'none';
+    });
+
+    document.getElementById('pwaDismissBtn')?.addEventListener('click', () => {
+        document.getElementById('pwaInstallBanner').style.display = 'none';
+    });
+
+    window.addEventListener('appinstalled', () => {
+        console.log('[PWA] 应用已安装');
+        document.getElementById('pwaInstallBanner').style.display = 'none';
+        showToast('卓盟智办公已成功安装到您的设备！', 'success');
+    });
+    </script>
+</body>
+</html>

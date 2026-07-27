@@ -1,0 +1,17 @@
+{
+  "name": "zhuomeng-office",
+  "version": "2.1.0",
+  "private": true,
+  "description": "卓盟智办公 - 前后端分离（方案 B：Vite+Vue3 前端 / Express 纯 API 后端）",
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"cd server && npm run dev\" \"cd web && npm run dev\"",
+    "install:all": "npm install && cd server && npm install && cd ../web && npm install",
+    "init-db": "cd server && npm run init-db",
+    "build:web": "cd web && npm run build",
+    "test": "cd server && npm test",
+    "lint": "cd server && npm run lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}

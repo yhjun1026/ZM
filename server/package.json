@@ -1,0 +1,38 @@
+{
+  "name": "zhuomeng-office-server",
+  "version": "2.1.0",
+  "description": "四川卓盟科技有限公司 智能办公管理平台 - 后端服务 (工程化重构版)",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "init-db": "node src/db/migrate.js up && node src/db/migrate.js seed",
+    "migrate": "node src/db/migrate.js up",
+    "seed": "node src/db/migrate.js seed",
+    "migrate:reset": "node src/db/migrate.js reset",
+    "test": "jest --runInBand",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write \"src/**/*.js\""
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.0",
+    "express-rate-limit": "^7.5.1",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "winston": "^3.14.2",
+    "xss": "^1.0.15"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "prettier": "^3.3.3",
+    "supertest": "^7.0.0"
+  }
+}
