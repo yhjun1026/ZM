@@ -8,13 +8,18 @@
 const db = require('./index');
 const logger = require('../utils/logger');
 
-const migrations = [require('./migrations/001_init'), require('./migrations/002_trips')];
+const migrations = [
+  require('./migrations/001_init'),
+  require('./migrations/002_trips'),
+  require('./migrations/003_sales_records'),
+];
 
 const ALL_TABLES = [
   'audit_log', 'business_trips', 'system_settings', 'notifications',
   'users', 'departments', 'customers', 'contracts', 'projects',
   'leave_records', 'expense_records', 'purchases', 'roles',
   'checkins', 'work_reports', 'kv_store', 'perm_logs', 'perm_approvals',
+  'sales_records',
 ];
 
 function up() {

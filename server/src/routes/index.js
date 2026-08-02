@@ -19,5 +19,6 @@ router.use('/checkin', require('./checkin.routes'));
 router.use('/reports', require('./report.routes'));
 router.use('/permission', require('./permission.routes'));
 router.use('/notifications', require('./notification.routes'));
+router.use('/sales', require('./sales.routes'));
 
 module.exports = router;

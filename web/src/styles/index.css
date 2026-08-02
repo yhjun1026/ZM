@@ -54,3 +54,16 @@ body,
   font-size: 13px;
   color: #909399;
 }
+
+/* ===== 移动端适配：窄屏自动堆叠、缩字号 ===== */
+@media (max-width: 768px) {
+  .el-col { max-width: 100% !important; flex: 0 0 100% !important; padding-left: 0 !important; padding-right: 0 !important; }
+  .page-header h2 { font-size: 18px; }
+  .page-header p { font-size: 12px; }
+  .stat-card { padding: 12px; }
+  .stat-card .stat-value { font-size: 20px; }
+  .el-card { margin-bottom: 10px; }
+  .el-table { font-size: 12px; }
+  .el-dialog { width: 92% !important; margin: 5vh auto !important; }
+  .el-form-item__label { font-size: 13px; }
+}

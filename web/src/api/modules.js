@@ -89,6 +89,10 @@ export const approvePermission = (id, data) => request.put(`/permission/approval
 export const getSales = () => request.get('/sales');
 export const getFinance = () => request.get('/finance');
 export const getStatistics = () => request.get('/statistics');
+// 销售明细录入
+export const getSalesRecords = () => request.get('/sales/records');
+export const addSalesRecord = (data) => request.post('/sales/records', data);
+export const deleteSalesRecord = (id) => request.delete(`/sales/records/${id}`);
 
 // 通知 / 设置 / 审计
 export const getNotifications = () => request.get('/notifications');
