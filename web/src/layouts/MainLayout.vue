@@ -66,12 +66,86 @@ async function onLogout() {
 </script>
 
 <style scoped>
-.sidebar { background: #1f2937; overflow-y: auto; }
-.logo { height: 60px; line-height: 60px; text-align: center; color: #fff; font-size: 17px; font-weight: 700; border-bottom: 1px solid #374151; }
-.sidebar :deep(.el-menu) { border-right: none; }
-.topbar { background: #fff; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e5e7eb; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-.page-title { font-size: 16px; font-weight: 600; }
-.user-area { display: flex; align-items: center; gap: 10px; }
-.user-name { font-size: 14px; font-weight: 600; }
-.mobile-main { padding: 10px !important; }
+.sidebar {
+  background: #1f2937;
+  overflow-y: auto;
+}
+
+.logo {
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  border-bottom: 1px solid #374151;
+}
+
+.sidebar :deep(.el-menu) {
+  border-right: none;
+}
+
+.topbar {
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  padding: 0 16px;
+}
+
+.page-title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.mobile-main {
+  padding: 10px !important;
+}
+
+/* 移动端抽屉样式 */
+:deep(.el-drawer) {
+  background: #1f2937;
+}
+
+:deep(.el-drawer__body) {
+  padding: 0;
+}
+
+/* 移动端菜单项样式 */
+:deep(.el-menu-item) {
+  height: 50px;
+  line-height: 50px;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 0 12px;
+  }
+
+  .page-title {
+    font-size: 15px;
+  }
+
+  .mobile-main {
+    padding: 8px !important;
+  }
+
+  .user-area {
+    gap: 6px;
+  }
+}
 </style>

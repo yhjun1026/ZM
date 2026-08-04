@@ -6,6 +6,7 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/login', name: 'login', component: () => import('../views/Login.vue') },
+    { path: '/debug', name: 'debug', component: () => import('../views/Debug.vue') },
     {
       path: '/',
       component: () => import('../layouts/MainLayout.vue'),
