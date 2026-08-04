@@ -61,9 +61,11 @@ async function onLogin() {
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  padding: 16px;
 }
 .login-card {
-  width: 380px;
+  width: 90%;
+  max-width: 380px;
 }
 .title {
   text-align: center;
@@ -81,5 +83,17 @@ async function onLogin() {
   color: #c0c4cc;
   font-size: 12px;
   margin: 16px 0 0;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    width: 95%;
+  }
+  .title {
+    font-size: 20px;
+  }
+  .subtitle {
+    font-size: 12px;
+  }
 }
 </style>

@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="page-header"><h2>工作台</h2><p>今日办公概览</p></div>
-    <el-row :gutter="16" style="margin-bottom: 16px;">
+
+    <!-- 桌面端布局：4列网格 -->
+    <el-row v-if="!isMobile" :gutter="16" style="margin-bottom: 16px;">
       <el-col :span="6" v-for="c in cards" :key="c.label">
         <div class="stat-card">
           <div class="stat-icon" :style="{ background: c.color }"><el-icon><component :is="c.icon" /></el-icon></div>
@@ -12,7 +14,20 @@
         </div>
       </el-col>
     </el-row>
-    <el-row :gutter="16">
+
+    <!-- 移动端布局：滑动卡片 -->
+    <div v-else class="mobile-cards">
+      <div class="mobile-card" v-for="c in cards" :key="c.label" :style="{ borderColor: c.color }">
+        <el-icon :size="28" :style="{ color: c.color }"><component :is="c.icon" /></el-icon>
+        <div class="mobile-card-content">
+          <div class="mobile-card-value">{{ c.value }}</div>
+          <div class="mobile-card-label">{{ c.label }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 桌面端：图表 + 动态 -->
+    <el-row v-if="!isMobile" :gutter="16">
       <el-col :span="16">
         <el-card>
           <template #header>收入 / 支出趋势（万元）</template>
@@ -30,6 +45,23 @@
         </el-card>
       </el-col>
     </el-row>
+
+    <!-- 移动端：可折叠的图表和动态 -->
+    <div v-else class="mobile-sections">
+      <el-collapse v-model="activeCollapse">
+        <el-collapse-item title="📊 收入/支出趋势" name="chart">
+          <div ref="chartRef" style="height: 250px;"></div>
+        </el-collapse-item>
+        <el-collapse-item title="🔔 最近动态" name="activity">
+          <div class="mobile-activities">
+            <div v-for="(a, i) in activities" :key="i" class="activity-item">
+              <div class="activity-text">{{ a.user }} {{ a.action }}</div>
+              <div class="activity-time">{{ a.time }}</div>
+            </div>
+          </div>
+        </el-collapse-item>
+      </el-collapse>
+    </div>
   </div>
 </template>
 
@@ -38,10 +70,13 @@ import { ref, onMounted, onUnmounted, computed } from 'vue';
 import * as echarts from 'echarts';
 import { getDashboard } from '../api/modules';
 import request from '../api/request';
+import { useDevice } from '../composables/useDevice';
 
+const { isMobile } = useDevice();
 const stats = ref({});
 const activities = ref([]);
 const chartRef = ref(null);
+const activeCollapse = ref(['chart']);
 let chart = null;
 
 const cards = computed(() => {
@@ -86,3 +121,75 @@ onUnmounted(() => {
   chart && chart.dispose();
 });
 </script>
+
+<style scoped>
+.mobile-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mobile-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 14px;
+  border-left: 3px solid;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.mobile-card-content {
+  text-align: center;
+}
+
+.mobile-card-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.mobile-card-label {
+  font-size: 12px;
+  color: #909399;
+  margin-top: 4px;
+}
+
+.mobile-sections {
+  background: #f5f7fa;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.mobile-activities {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.activity-item {
+  padding: 10px;
+  background: #f5f7fa;
+  border-radius: 6px;
+}
+
+.activity-text {
+  font-size: 13px;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.activity-time {
+  font-size: 11px;
+  color: #909399;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    margin-bottom: 12px;
+  }
+}
+</style>
