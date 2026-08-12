@@ -4,13 +4,12 @@
  *   - documents（公司文件）
  *   - logistics（后勤工单）
  *   - vehicles（车辆管理）
- * 包含种子数据
  */
 module.exports = {
   id: '004_add_missing_tables',
 
   up(db) {
-    console.log('[Migration 004] 开始添加缺失的业务表...');
+    console.log('[Migration 004] 开始创建缺失的业务表...');
 
     // ===== 供应商表 =====
     db.exec(`
@@ -93,6 +92,18 @@ module.exports = {
       );
     `);
 
+    console.log('[Migration 004] 表结构创建完成');
+  },
+
+  seed(db) {
+    // 幂等保护：如果 suppliers 表已有数据则跳过
+    if (db.prepare('SELECT COUNT(*) as c FROM suppliers').get().c > 0) {
+      console.log('[Migration 004] 种子数据已存在，跳过');
+      return;
+    }
+
+    console.log('[Migration 004] 开始插入种子数据...');
+
     // ===== 插入供应商种子数据 =====
     const suppliers = [
       ['SUP001', '成都科技有限公司', '成都科技', '电子设备', 'A级', '张经理', '13800138001', 'zhang@supplier1.com', '成都市高新区', '中国银行', '1234567890', '电子元器件', 15, 1500000, 4.8, '合作中', '2025-01-15', '优质供应商，供货稳定'],
@@ -106,13 +117,7 @@ module.exports = {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '[]', '[]', '[]')
     `);
 
-    suppliers.forEach(s => {
-      try {
-        insertSupplier.run(...s);
-      } catch (err) {
-        console.log(`[Migration 004] 供应商 ${s[0]} 已存在，跳过`);
-      }
-    });
+    suppliers.forEach(s => insertSupplier.run(...s));
 
     // ===== 插入公司文件种子数据 =====
     const documents = [
@@ -126,13 +131,7 @@ module.exports = {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '[]')
     `);
 
-    documents.forEach(d => {
-      try {
-        insertDocument.run(...d);
-      } catch (err) {
-        console.log(`[Migration 004] 公司文件 ${d[0]} 已存在，跳过`);
-      }
-    });
+    documents.forEach(d => insertDocument.run(...d));
 
     // ===== 插入后勤工单种子数据 =====
     const logisticsItems = [
@@ -146,13 +145,7 @@ module.exports = {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
-    logisticsItems.forEach(l => {
-      try {
-        insertLogistics.run(...l);
-      } catch (err) {
-        console.log(`[Migration 004] 后勤工单已存在，跳过`);
-      }
-    });
+    logisticsItems.forEach(l => insertLogistics.run(...l));
 
     // ===== 插入车辆管理种子数据 =====
     const vehicles = [
@@ -166,15 +159,9 @@ module.exports = {
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
 
-    vehicles.forEach(v => {
-      try {
-        insertVehicle.run(...v);
-      } catch (err) {
-        console.log(`[Migration 004] 车辆 ${v[0]} 已存在，跳过`);
-      }
-    });
+    vehicles.forEach(v => insertVehicle.run(...v));
 
-    console.log('[Migration 004] 表结构和种子数据添加完成');
+    console.log('[Migration 004] 种子数据插入完成');
   },
 
   down(db) {
