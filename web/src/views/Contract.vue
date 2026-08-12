@@ -15,7 +15,7 @@
         <el-table-column label="状态" width="90"><template #default="{ row }"><el-tag :type="statusType(row.status)" size="small">{{ row.status }}</el-tag></template></el-table-column>
         <el-table-column label="操作" width="200" fixed="right">
           <template #default="{ row }">
-            <template v-if="row.status === '待审批'">
+            <template v-if="row.status === '待审批' && canApprove">
               <el-button size="small" type="success" @click="onApprove(row, '执行中')">通过</el-button>
               <el-button size="small" type="danger" @click="onApprove(row, '已驳回')">驳回</el-button>
             </template>
@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Plus, Delete } from '@element-plus/icons-vue';
 import { getContracts, addContract, approveContract, deleteContract } from '../api/modules';
@@ -48,6 +48,12 @@ import { useAuthStore } from '../stores/auth';
 
 const auth = useAuthStore();
 const records = ref([]);
+
+// 审批权限：非普通员工才能审批
+const canApprove = computed(() => {
+  return auth.user && auth.user.role !== '普通员工';
+});
+
 async function load() {
   const r = await getContracts();
   if (r.success) records.value = r.data || [];

@@ -2,7 +2,7 @@
   <div>
     <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
       <div><h2>采购管理</h2><p>采购申请、审批与入库</p></div>
-      <el-button type="primary" @click="openCreate"><el-icon><Plus /></el-icon> 新建采购</el-button>
+      <el-button v-if="canCreate" type="primary" @click="openCreate"><el-icon><Plus /></el-icon> 新建采购</el-button>
     </div>
     <el-row :gutter="12" style="margin-bottom: 16px;">
       <el-col :span="6"><el-card><div style="font-size:13px;color:#909399;">采购申请</div><div style="font-size:22px;font-weight:700;">{{ records.length }}</div></el-card></el-col>
@@ -22,7 +22,7 @@
         <el-table-column label="状态" width="90"><template #default="{ row }"><el-tag :type="statusType(row.status)" size="small">{{ row.status }}</el-tag></template></el-table-column>
         <el-table-column label="操作" width="170" fixed="right">
           <template #default="{ row }">
-            <el-button v-if="row.status === '待审批'" size="small" type="success" @click="onApprove(row)">审批</el-button>
+            <el-button v-if="row.status === '待审批' && canApprove" size="small" type="success" @click="onApprove(row)">审批</el-button>
             <el-button size="small" type="danger" @click="onDelete(row)">删除</el-button>
           </template>
         </el-table-column>
@@ -54,6 +54,26 @@ import { useAuthStore } from '../stores/auth';
 const auth = useAuthStore();
 const records = ref([]);
 const total = computed(() => (records.value.reduce((s, p) => s + Number(p.amount || 0), 0) / 10000).toFixed(1));
+
+// 新增采购权限：管理层 + 后勤/财务/技术部普通员工
+const canCreate = computed(() => {
+  if (!auth.user) return false;
+  const role = auth.user.role;
+  const dept = auth.user.dept;
+  // 管理层
+  if (['总经理', '副总', '销售总监', '部门经理', '区域经理'].includes(role)) return true;
+  // 后勤/财务/技术部普通员工可发起
+  if (role === '普通员工' && ['后勤管理部', '财务部', '技术部'].includes(dept)) return true;
+  // 专员角色
+  if (role === '后勤专员' || role === '财务专员') return true;
+  return false;
+});
+
+// 审批权限：非普通员工才能审批
+const canApprove = computed(() => {
+  return auth.user && auth.user.role !== '普通员工';
+});
+
 async function load() {
   const r = await getPurchases();
   if (r.success) records.value = r.data || [];

@@ -14,7 +14,7 @@
         <el-table-column label="状态" width="90"><template #default="{ row }"><el-tag :type="statusType(row.status)" size="small">{{ row.status }}</el-tag></template></el-table-column>
         <el-table-column label="操作" width="150" fixed="right">
           <template #default="{ row }">
-            <template v-if="row.status === '待审批'">
+            <template v-if="row.status === '待审批' && canApprove">
               <el-button size="small" type="success" @click="onApprove(row, '已通过')">通过</el-button>
               <el-button size="small" type="danger" @click="onApprove(row, '已驳回')">驳回</el-button>
             </template>
@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Plus } from '@element-plus/icons-vue';
 import { getExpense, applyExpense, approveExpense } from '../api/modules';
@@ -46,6 +46,12 @@ import { useAuthStore } from '../stores/auth';
 const auth = useAuthStore();
 const records = ref([]);
 const categories = ref([]);
+
+// 审批权限：非普通员工才能审批
+const canApprove = computed(() => {
+  return auth.user && auth.user.role !== '普通员工';
+});
+
 async function load() {
   const r = await getExpense();
   if (r.success) { records.value = r.data.records || []; categories.value = r.data.categories || []; }
@@ -56,6 +62,10 @@ function statusType(s) { return s === '已通过' ? 'success' : s === '待审批
 const dlg = reactive({ visible: false, saving: false, form: { category: '', amount: 0, date: '', desc: '' } });
 function openApply() { dlg.form = { category: categories.value[0] || '交通费', amount: 0, date: new Date().toISOString().slice(0, 10), desc: '' }; dlg.visible = true; }
 async function onSubmit() {
+  if (!dlg.form.amount || dlg.form.amount <= 0) {
+    ElMessage.warning('请填写有效的报销金额');
+    return;
+  }
   dlg.saving = true;
   const r = await applyExpense({ applicant: auth.userName, ...dlg.form });
   dlg.saving = false;

@@ -2,7 +2,7 @@
   <div>
     <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;">
       <div><h2>客户管理</h2><p>分级管理客户档案</p></div>
-      <el-button type="primary" @click="openCreate"><el-icon><Plus /></el-icon> 新增客户</el-button>
+      <el-button v-if="canCreate" type="primary" @click="openCreate"><el-icon><Plus /></el-icon> 新增客户</el-button>
     </div>
     <el-card style="margin-bottom: 16px;">
       <el-row :gutter="12">
@@ -95,6 +95,17 @@ const auth = useAuthStore();
 const list = ref([]);
 const levels = ref([]);
 const filter = reactive({ level: '', keyword: '' });
+
+// 新增客户权限：管理层 + 财务专员 + 人事专员
+const canCreate = computed(() => {
+  if (!auth.user) return false;
+  const role = auth.user.role;
+  // 管理层
+  if (['总经理', '副总', '销售总监', '部门经理', '区域经理'].includes(role)) return true;
+  // 特定角色
+  if (role === '财务专员' || role === '人事专员') return true;
+  return false;
+});
 
 const filtered = computed(() =>
   list.value.filter((c) => {

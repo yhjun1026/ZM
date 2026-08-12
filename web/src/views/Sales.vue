@@ -2,8 +2,8 @@
   <div>
     <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
       <div><h2>销售统计</h2><p>销售业绩与明细录入</p></div>
-      <el-button v-if="!isMobile" type="primary" @click="openCreate"><el-icon><Plus /></el-icon> 录入销售</el-button>
-      <el-button v-else type="primary" size="small" @click="openCreate"><el-icon><Plus /></el-icon> 录入</el-button>
+      <el-button v-if="!isMobile && canCreate" type="primary" @click="openCreate"><el-icon><Plus /></el-icon> 录入销售</el-button>
+      <el-button v-else-if="isMobile && canCreate" type="primary" size="small" @click="openCreate"><el-icon><Plus /></el-icon> 录入</el-button>
     </div>
 
     <!-- 桌面端：统计卡片 -->
@@ -102,7 +102,7 @@
       <template #header>
         <div style="display: flex; justify-content: space-between; align-items: center;">
           <span>销售明细（录入）</span>
-          <el-button v-if="isMobile" type="primary" size="small" @click="openCreate"><el-icon><Plus /></el-icon></el-button>
+          <el-button v-if="isMobile && canCreate" type="primary" size="small" @click="openCreate"><el-icon><Plus /></el-icon></el-button>
         </div>
       </template>
 
@@ -172,6 +172,18 @@ const chart = ref(null);
 const activeCollapse = ref(['territory']);
 let inst = null;
 const records = ref([]);
+
+// 销售录入权限：销售部员工 + 管理层
+const canCreate = computed(() => {
+  if (!auth.user) return false;
+  const role = auth.user.role;
+  const dept = auth.user.dept;
+  // 管理层
+  if (['总经理', '副总', '销售总监', '部门经理', '区域经理'].includes(role)) return true;
+  // 销售部员工
+  if (dept === '销售部') return true;
+  return false;
+});
 
 const tm = computed(() => data.value.thisMonth || {});
 const pipeline = computed(() => data.value.pipeline || {});

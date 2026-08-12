@@ -20,7 +20,7 @@
         </el-table-column>
         <el-table-column label="操作" width="170" fixed="right">
           <template #default="{ row }">
-            <template v-if="row.status === '待审批'">
+            <template v-if="row.status === '待审批' && canApprove">
               <el-button size="small" type="success" @click="onApprove(row, '已通过')">通过</el-button>
               <el-button size="small" type="danger" @click="onApprove(row, '已驳回')">驳回</el-button>
             </template>
@@ -51,7 +51,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue';
+import { ref, reactive, computed, onMounted } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Plus } from '@element-plus/icons-vue';
 import { getLeave, applyLeave, approveLeave } from '../api/modules';
@@ -60,6 +60,11 @@ import { useAuthStore } from '../stores/auth';
 const auth = useAuthStore();
 const records = ref([]);
 const leaveTypes = ref([]);
+
+// 审批权限：非普通员工才能审批
+const canApprove = computed(() => {
+  return auth.user && auth.user.role !== '普通员工';
+});
 
 async function load() {
   const r = await getLeave();
