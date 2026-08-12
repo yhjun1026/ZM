@@ -7,13 +7,14 @@
     <el-card>
       <el-table :data="records" stripe>
         <el-table-column prop="applicant" label="申请人" width="100" />
+        <el-table-column prop="dept" label="部门" width="120" />
         <el-table-column label="类型" width="90">
           <template #default="{ row }"><el-tag>{{ row.type }}</el-tag></template>
         </el-table-column>
-        <el-table-column prop="startDate" label="起始" width="120" />
-        <el-table-column prop="endDate" label="结束" width="120" />
-        <el-table-column prop="days" label="天数" width="80" />
-        <el-table-column prop="reason" label="原因" min-width="160" />
+        <el-table-column prop="startDate" label="起始" width="110" />
+        <el-table-column prop="endDate" label="结束" width="110" />
+        <el-table-column prop="days" label="天数" width="70" />
+        <el-table-column prop="reason" label="原因" min-width="140" />
         <el-table-column prop="approver" label="审批人" width="100" />
         <el-table-column label="状态" width="100">
           <template #default="{ row }"><el-tag :type="statusType(row.status)">{{ row.status }}</el-tag></template>

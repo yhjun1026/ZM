@@ -7,9 +7,10 @@
     <el-card>
       <el-table :data="records" stripe>
         <el-table-column prop="user_name" label="申请人" width="100" />
+        <el-table-column prop="dept" label="部门" width="120" />
         <el-table-column label="类型" width="80"><template #default="{ row }"><el-tag size="small">{{ row.type }}</el-tag></template></el-table-column>
         <el-table-column prop="date" label="日期" width="110" />
-        <el-table-column label="完成情况" min-width="220"><template #default="{ row }"><span style="white-space: pre-wrap;">{{ (row.content || '').slice(0, 60) }}</span></template></el-table-column>
+        <el-table-column label="完成情况" min-width="200"><template #default="{ row }"><span style="white-space: pre-wrap;">{{ (row.content || '').slice(0, 60) }}</span></template></el-table-column>
         <el-table-column label="状态" width="90"><template #default="{ row }"><el-tag :type="row.status === '已审批' ? 'success' : 'warning'" size="small">{{ row.status }}</el-tag></template></el-table-column>
         <el-table-column label="操作" width="150" fixed="right">
           <template #default="{ row }">
