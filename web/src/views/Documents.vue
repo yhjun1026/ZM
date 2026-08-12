@@ -246,7 +246,15 @@ async function onSubmit() {
 
   dialog.saving = true;
   try {
-    const res = await request.post('/documents', dialog.form);
+    // 字段名转换（后端会自动处理驼峰到下划线的转换）
+    const formData = {
+      title: dialog.form.title,
+      type: dialog.form.type,
+      distributeScope: dialog.form.distributeScope,
+      content: dialog.form.content
+    };
+
+    const res = await request.post('/documents', formData);
     if (res.data.success) {
       ElMessage.success('文件创建成功');
       dialog.visible = false;
