@@ -20,5 +20,8 @@ router.use('/reports', require('./report.routes'));
 router.use('/permission', require('./permission.routes'));
 router.use('/notifications', require('./notification.routes'));
 router.use('/sales', require('./sales.routes'));
+router.use('/suppliers', require('./supplier.routes'));
+router.use('/documents', require('./document.routes'));
+router.use('/logistics', require('./logistics.routes'));
 
 module.exports = router;

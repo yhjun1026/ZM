@@ -48,6 +48,33 @@ export const addPurchase = (data) => request.post('/purchases', data);
 export const approvePurchase = (id, data) => request.put(`/purchases/${id}/approve`, data);
 export const deletePurchase = (id) => request.delete(`/purchases/${id}`);
 
+// 供应商管理
+export const getSuppliers = () => request.get('/suppliers');
+export const getSupplier = (id) => request.get(`/suppliers/${id}`);
+export const addSupplier = (data) => request.post('/suppliers', data);
+export const updateSupplier = (id, data) => request.put(`/suppliers/${id}`, data);
+export const deleteSupplier = (id) => request.delete(`/suppliers/${id}`);
+
+// 公司文件
+export const getDocuments = () => request.get('/documents');
+export const getDocument = (id) => request.get(`/documents/${id}`);
+export const createDocument = (data) => request.post('/documents', data);
+export const submitDocument = (id) => request.post(`/documents/${id}/submit`);
+export const approveDocument = (id, data) => request.post(`/documents/${id}/approve`, data);
+export const rejectDocument = (id, data) => request.post(`/documents/${id}/reject`, data);
+export const updateDocument = (id, data) => request.put(`/documents/${id}`, data);
+export const deleteDocument = (id) => request.delete(`/documents/${id}`);
+
+// 后勤管理
+export const getLogisticsItems = () => request.get('/logistics/items');
+export const getLogisticsItem = (id) => request.get(`/logistics/items/${id}`);
+export const createLogisticsItem = (data) => request.post('/logistics/items', data);
+export const updateLogisticsItem = (id, data) => request.put(`/logistics/items/${id}`, data);
+export const getVehicles = () => request.get('/logistics/vehicles');
+export const getVehicle = (id) => request.get(`/logistics/vehicles/${id}`);
+export const createVehicle = (data) => request.post('/logistics/vehicles', data);
+export const updateVehicle = (id, data) => request.put(`/logistics/vehicles/${id}`, data);
+
 // 项目
 export const getProjects = () => request.get('/projects');
 export const addProject = (data) => request.post('/projects', data);

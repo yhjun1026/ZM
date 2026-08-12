@@ -12,6 +12,7 @@ const migrations = [
   require('./migrations/001_init'),
   require('./migrations/002_trips'),
   require('./migrations/003_sales_records'),
+  require('./migrations/004_add_missing_tables'),
 ];
 
 const ALL_TABLES = [
@@ -19,7 +20,7 @@ const ALL_TABLES = [
   'users', 'departments', 'customers', 'contracts', 'projects',
   'leave_records', 'expense_records', 'purchases', 'roles',
   'checkins', 'work_reports', 'kv_store', 'perm_logs', 'perm_approvals',
-  'sales_records',
+  'sales_records', 'suppliers', 'documents', 'logistics', 'vehicles',
 ];
 
 function up() {
