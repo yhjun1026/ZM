@@ -275,9 +275,25 @@ async function onSubmit() {
 
   dialog.saving = true;
   try {
+    // 转换字段名为后端期望的格式（下划线命名）
+    const formData = {
+      name: dialog.form.name,
+      shortName: dialog.form.shortName,  // 后端会自动处理
+      category: dialog.form.category,
+      level: dialog.form.level,
+      contact: dialog.form.contact,
+      phone: dialog.form.phone,
+      email: dialog.form.email,
+      address: dialog.form.address,
+      bank: dialog.form.bank,
+      account: dialog.form.account,
+      businessScope: dialog.form.businessScope,  // 后端会自动处理
+      remark: dialog.form.remark
+    };
+
     const url = dialog.isEdit ? `/suppliers/${dialog.form.id}` : '/suppliers';
     const method = dialog.isEdit ? 'put' : 'post';
-    const res = await request[method](url, dialog.form);
+    const res = await request[method](url, formData);
 
     if (res.data.success) {
       ElMessage.success(dialog.isEdit ? '供应商更新成功' : '供应商创建成功');
