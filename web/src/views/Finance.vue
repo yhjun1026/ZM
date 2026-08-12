@@ -32,6 +32,40 @@
       </el-col>
       <el-col :span="12">
         <el-card>
+          <template #header>应付账款</template>
+          <el-table :data="payable" size="small">
+            <el-table-column prop="vendor" label="供应商" min-width="140" />
+            <el-table-column prop="amount" label="金额(万)" width="90" />
+            <el-table-column prop="dueDate" label="到期日" width="110" />
+            <el-table-column label="状态" width="90"><template #default="{ row }"><el-tag :type="row.status === '逾期' ? 'danger' : row.status === '即将到期' ? 'warning' : 'success'" size="small">{{ row.status }}</el-tag></template></el-table-column>
+          </el-table>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <!-- 桌面端：固定资产 -->
+    <el-row v-if="!isMobile" :gutter="16" style="margin-top: 16px;">
+      <el-col :span="24">
+        <el-card>
+          <template #header>固定资产</template>
+          <el-table :data="assets" size="small">
+            <el-table-column prop="id" label="资产编号" width="100" />
+            <el-table-column prop="name" label="名称" min-width="120" />
+            <el-table-column prop="category" label="类别" width="100" />
+            <el-table-column prop="dept" label="部门" width="100" />
+            <el-table-column label="原值(¥)" width="120"><template #default="{ row }">¥{{ (row.original_value || 0).toLocaleString() }}</template></el-table-column>
+            <el-table-column label="累计折旧" width="120"><template #default="{ row }">¥{{ (row.accumulated_dep || 0).toLocaleString() }}</template></el-table-column>
+            <el-table-column label="净值" width="120"><template #default="{ row }">¥{{ (row.net_value || 0).toLocaleString() }}</template></el-table-column>
+            <el-table-column prop="status" label="状态" width="90"><template #default="{ row }"><el-tag :type="row.status === '正常' ? 'success' : 'warning'" size="small">{{ row.status }}</el-tag></template></el-table-column>
+          </el-table>
+        </el-card>
+      </el-col>
+    </el-row>
+
+    <!-- 桌面端：费用结构图表 -->
+    <el-row v-if="!isMobile" :gutter="16" style="margin-top: 16px;">
+      <el-col :span="24">
+        <el-card>
           <template #header>费用结构</template>
           <div ref="chart" style="height: 300px;"></div>
         </el-card>
@@ -51,6 +85,46 @@
             <div class="receivable-detail">
               <span>金额：{{ item.amount }}万</span>
               <span>到期：{{ item.dueDate }}</span>
+            </div>
+          </div>
+        </el-collapse-item>
+        <el-collapse-item title="💸 应付账款" name="payable">
+          <div v-if="payable.length === 0" class="empty-text">暂无数据</div>
+          <div v-for="item in payable" :key="item.vendor" class="receivable-item">
+            <div class="receivable-header">
+              <span class="customer-name">{{ item.vendor }}</span>
+              <el-tag :type="item.status === '逾期' ? 'danger' : item.status === '即将到期' ? 'warning' : 'success'" size="small">{{ item.status }}</el-tag>
+            </div>
+            <div class="receivable-detail">
+              <span>金额：{{ item.amount }}万</span>
+              <span>到期：{{ item.dueDate }}</span>
+            </div>
+          </div>
+        </el-collapse-item>
+        <el-collapse-item title="🏢 固定资产" name="assets">
+          <div v-if="assets.length === 0" class="empty-text">暂无数据</div>
+          <div v-for="item in assets" :key="item.id" class="asset-item">
+            <div class="asset-header">
+              <span class="asset-id">{{ item.id }}</span>
+              <span class="asset-name">{{ item.name }}</span>
+              <el-tag :type="item.status === '正常' ? 'success' : 'warning'" size="small">{{ item.status }}</el-tag>
+            </div>
+            <div class="asset-info">
+              <span>{{ item.category }} · {{ item.dept }}</span>
+            </div>
+            <div class="asset-values">
+              <div class="asset-value-item">
+                <span class="label">原值</span>
+                <span class="value">¥{{ (item.original_value || 0).toLocaleString() }}</span>
+              </div>
+              <div class="asset-value-item">
+                <span class="label">折旧</span>
+                <span class="value">¥{{ (item.accumulated_dep || 0).toLocaleString() }}</span>
+              </div>
+              <div class="asset-value-item">
+                <span class="label">净值</span>
+                <span class="value net">¥{{ (item.net_value || 0).toLocaleString() }}</span>
+              </div>
             </div>
           </div>
         </el-collapse-item>
@@ -75,6 +149,8 @@ const activeCollapse = ref(['receivable']);
 let inst = null;
 const tm = computed(() => data.value.thisMonth || {});
 const receivable = computed(() => data.value.receivable || []);
+const payable = computed(() => data.value.payable || []);
+const assets = computed(() => data.value.assets || []);
 const kpis = computed(() => [
   { label: '本月收入(万)', value: tm.value.revenue ?? '-', color: '#2563eb' },
   { label: '本月支出(万)', value: tm.value.expense ?? '-', color: '#f59e0b' },
@@ -165,5 +241,66 @@ onUnmounted(() => { window.removeEventListener('resize', rz); inst && inst.dispo
   text-align: center;
   color: #909399;
   padding: 20px;
+}
+
+.asset-item {
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.asset-item:last-child {
+  border-bottom: none;
+}
+
+.asset-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.asset-id {
+  font-size: 12px;
+  color: #909399;
+  font-family: monospace;
+}
+
+.asset-name {
+  font-weight: 600;
+  color: #1f2937;
+  flex: 1;
+}
+
+.asset-info {
+  font-size: 12px;
+  color: #909399;
+  margin-bottom: 8px;
+}
+
+.asset-values {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.asset-value-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.asset-value-item .label {
+  font-size: 11px;
+  color: #909399;
+}
+
+.asset-value-item .value {
+  font-size: 13px;
+  font-weight: 600;
+  color: #606266;
+}
+
+.asset-value-item .value.net {
+  color: #10b981;
 }
 </style>
