@@ -4,10 +4,14 @@
     <el-aside v-if="!isMobile" width="220px" class="sidebar">
       <div class="logo">卓盟智办公</div>
       <el-menu :default-active="$route.path" router background-color="#1f2937" text-color="#cbd5e1" active-text-color="#60a5fa">
-        <el-menu-item v-for="m in modules" :key="m.path" :index="m.path">
-          <el-icon><component :is="m.icon" /></el-icon>
-          <span>{{ m.title }}</span>
-        </el-menu-item>
+        <template v-for="group in moduleGroups" :key="group.title">
+          <div class="menu-group-title">{{ group.title }}</div>
+          <el-menu-item v-for="m in group.items" :key="m.path" :index="m.path">
+            <el-icon><component :is="m.icon" /></el-icon>
+            <span>{{ m.title }}</span>
+            <el-badge v-if="m.badge && badges[m.badge]" :value="badges[m.badge]" class="menu-badge" />
+          </el-menu-item>
+        </template>
       </el-menu>
     </el-aside>
 
@@ -32,27 +36,63 @@
     <el-drawer v-model="drawer" direction="ltr" size="240px" :with-header="false">
       <div class="logo" style="background:#1f2937;">卓盟智办公</div>
       <el-menu :default-active="$route.path" router @select="drawer = false" background-color="#1f2937" text-color="#cbd5e1" active-text-color="#60a5fa" style="border-right:none;">
-        <el-menu-item v-for="m in modules" :key="m.path" :index="m.path">
-          <el-icon><component :is="m.icon" /></el-icon>
-          <span>{{ m.title }}</span>
-        </el-menu-item>
+        <template v-for="group in moduleGroups" :key="group.title">
+          <div class="menu-group-title">{{ group.title }}</div>
+          <el-menu-item v-for="m in group.items" :key="m.path" :index="m.path">
+            <el-icon><component :is="m.icon" /></el-icon>
+            <span>{{ m.title }}</span>
+            <el-badge v-if="m.badge && badges[m.badge]" :value="badges[m.badge]" class="menu-badge" />
+          </el-menu-item>
+        </template>
       </el-menu>
     </el-drawer>
   </el-container>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { ElMessageBox } from 'element-plus';
-import { modules } from '../config/modules';
+import { moduleGroups } from '../config/modules';
 import { useAuthStore } from '../stores/auth';
 import { useDevice } from '../composables/useDevice';
+import request from '../api/request';
 
 const auth = useAuthStore();
 const router = useRouter();
 const { isMobile } = useDevice();
 const drawer = ref(false);
+
+// Badge数字提醒
+const badges = ref({
+  pendingReports: 0,
+  pendingContracts: 0,
+  activeProjects: 0,
+  pendingLogistics: 0,
+  pendingDocuments: 0,
+  pendingFinance: 0
+});
+
+// 获取badge数字
+async function loadBadges() {
+  try {
+    const res = await request.get('/dashboard');
+    if (res.data.success) {
+      const data = res.data.data;
+      // 从工作台数据中提取badge数字
+      badges.value = {
+        pendingReports: data.stats?.pendingReports || 0,
+        pendingContracts: data.stats?.pendingContracts || 0,
+        activeProjects: data.stats?.activeProjects || 0,
+        pendingLogistics: data.stats?.pendingLogistics || 0,
+        pendingDocuments: data.stats?.pendingDocuments || 0,
+        pendingFinance: data.stats?.pendingFinance || 0
+      };
+    }
+  } catch (e) {
+    console.error('加载badge数字失败:', e);
+  }
+}
 
 async function onLogout() {
   try {
@@ -63,6 +103,12 @@ async function onLogout() {
   await auth.logout();
   router.push('/login');
 }
+
+onMounted(() => {
+  loadBadges();
+  // 定期刷新badge（每5分钟）
+  setInterval(loadBadges, 5 * 60 * 1000);
+});
 </script>
 
 <style scoped>
@@ -83,6 +129,31 @@ async function onLogout() {
 
 .sidebar :deep(.el-menu) {
   border-right: none;
+}
+
+.menu-group-title {
+  color: #94a3b8;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 16px 20px 8px;
+  letter-spacing: 0.5px;
+  user-select: none;
+}
+
+.menu-group-title:first-child {
+  padding-top: 12px;
+}
+
+.menu-badge {
+  margin-left: 8px;
+}
+
+.menu-badge :deep(.el-badge__content) {
+  background: #ef4444;
+  font-size: 11px;
+  height: 16px;
+  line-height: 16px;
+  padding: 0 5px;
 }
 
 .topbar {

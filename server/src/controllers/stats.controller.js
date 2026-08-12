@@ -4,8 +4,21 @@ const getKV = require('../utils/kv');
 
 // 工作台
 function dashboard(req, res) {
+  // 实时计算badge数字
+  const badgeStats = {
+    pendingReports: db.prepare("SELECT COUNT(*) as count FROM work_reports WHERE status = '已提交'").get().count,
+    pendingContracts: db.prepare("SELECT COUNT(*) as count FROM contracts WHERE status = '待审批'").get().count,
+    activeProjects: db.prepare("SELECT COUNT(*) as count FROM projects WHERE status IN ('执行中', '规划中')").get().count,
+    pendingLogistics: db.prepare("SELECT COUNT(*) as count FROM logistics WHERE status = '待处理'").get().count,
+    pendingDocuments: db.prepare("SELECT COUNT(*) as count FROM documents WHERE status = '审批中'").get().count,
+    pendingFinance: db.prepare("SELECT COUNT(*) as count FROM expense_records WHERE status = '待审批'").get().count,
+  };
+
   return res.json(success({
-    stats: getKV('stats'),
+    stats: {
+      ...getKV('stats'),
+      ...badgeStats  // 合并badge统计到stats中
+    },
     activities: getKV('activities'),
     todayCheckin: getKV('todayCheckin'),
     currentUser: getKV('currentUser'),
