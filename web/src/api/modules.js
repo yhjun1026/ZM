@@ -111,6 +111,8 @@ export const getTeamMembers = () => request.get('/teamMembers');
 export const getPermission = () => request.get('/permission');
 export const applyPermission = (data) => request.post('/permission/approvals', data);
 export const approvePermission = (id, data) => request.put(`/permission/approvals/${id}`, data);
+export const getPermissionRoles = () => request.get('/permissions/roles');
+export const getPermissionAuditLogs = () => request.get('/permissions/audit-logs');
 
 // 销售 / 财务 / 统计
 export const getSales = () => request.get('/sales');
