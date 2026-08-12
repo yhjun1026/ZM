@@ -109,14 +109,24 @@ const cards = computed(() => {
   ];
 });
 
-const quickActions = [
-  { label: '外勤打卡', path: '/checkin', icon: 'Location', color: '#2563eb', bgColor: '#eff6ff' },
-  { label: '工作汇报', path: '/reports', icon: 'Document', color: '#10b981', bgColor: '#ecfdf5' },
-  { label: '假期申请', path: '/leave', icon: 'Calendar', color: '#f59e0b', bgColor: '#fef3c7' },
-  { label: '费用报销', path: '/expense', icon: 'Money', color: '#8b5cf6', bgColor: '#f3e8ff' },
-  { label: '合同审批', path: '/contract', icon: 'Tickets', color: '#ef4444', bgColor: '#fee2e2' },
-  { label: '公司文件', path: '/documents', icon: 'Folder', color: '#06b6d4', bgColor: '#cffafe' },
-];
+const quickActions = computed(() => {
+  // 根据用户权限过滤快捷操作
+  const allActions = [
+    { label: '外勤打卡', path: '/checkin', icon: 'Location', color: '#2563eb', bgColor: '#eff6ff' },
+    { label: '工作汇报', path: '/reports', icon: 'Document', color: '#10b981', bgColor: '#ecfdf5' },
+    { label: '假期申请', path: '/leave', icon: 'Calendar', color: '#f59e0b', bgColor: '#fef3c7' },
+    { label: '费用报销', path: '/expense', icon: 'Money', color: '#8b5cf6', bgColor: '#f3e8ff' },
+    { label: '合同审批', path: '/contract', icon: 'Tickets', color: '#ef4444', bgColor: '#fee2e2' },
+    { label: '公司文件', path: '/documents', icon: 'Folder', color: '#06b6d4', bgColor: '#cffafe' },
+  ];
+
+  // 检查用户是否有权限访问对应模块
+  return allActions.filter(action => {
+    const modulePath = action.path.slice(1); // 去掉前导 /
+    // 简单权限检查：所有登录用户都可以访问这些基础模块
+    return auth.user && auth.token;
+  });
+});
 
 onMounted(async () => {
   try {
