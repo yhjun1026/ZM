@@ -12,6 +12,12 @@ module.exports = {
   up() {},
 
   seed(db) {
+    // 生产保护：此迁移会覆盖用户/部门/角色（含密码重置为参考默认值），
+    // 仅在显式设置 ALIGN_REFERENCE_ORG=1 时执行，避免生产库被每次启动重置。
+    if (process.env.ALIGN_REFERENCE_ORG !== '1') {
+      console.log('[Migration 006] 跳过（设置 ALIGN_REFERENCE_ORG=1 才会执行组织对齐）');
+      return;
+    }
     // ===== 1. 用户（与参考项目 seed 对齐） =====
     const LEAVE_BALANCE = JSON.stringify({ annual: 5, sick: 3, personal: 2, totalUsed: 0 });
     const users = [

@@ -1,5 +1,8 @@
 const router = require('express').Router();
 
+// 参考项目全量路由（51 个模块组，挂载在前，与参考后端路径完全一致）
+router.use('/', require('./ref'));
+
 // 挂在 /api 根下的端点
 router.use('/', require('./auth.routes'));
 router.use('/', require('./stats.routes'));

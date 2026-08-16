@@ -15,6 +15,8 @@ const migrations = [
   require('./migrations/004_add_missing_tables'),
   require('./migrations/005_seed_business_data'),
   require('./migrations/006_align_reference_org'),
+  require('./migrations/007_reference_schema'),
+  require('./migrations/008_reference_business_data'),
 ];
 
 const ALL_TABLES = [

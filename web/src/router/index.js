@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
-import { childRoutes } from '../config/modules';
+import { childRoutes, hiddenChildRoutes } from '../config/modules';
 
 const router = createRouter({
   history: createWebHistory(),
@@ -11,7 +11,7 @@ const router = createRouter({
       path: '/',
       component: () => import('../layouts/MainLayout.vue'),
       redirect: '/dashboard',
-      children: childRoutes,
+      children: [...childRoutes, ...hiddenChildRoutes],
     },
   ],
 });

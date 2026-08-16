@@ -25,9 +25,9 @@ request.interceptors.response.use(
         if (router.currentRoute.value.name !== 'login') router.push('/login');
       });
     } else if (status === 403) {
-      ElMessage.error(data?.message || '无权限执行此操作');
+      ElMessage.error(data?.message || data?.msg || '无权限执行此操作');
     } else if (status) {
-      ElMessage.error(data?.message || `请求失败 (${status})`);
+      ElMessage.error(data?.message || data?.msg || `请求失败 (${status})`);
     } else {
       ElMessage.error(error.message || '网络错误');
     }

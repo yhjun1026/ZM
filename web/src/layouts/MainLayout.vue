@@ -71,15 +71,17 @@ const badges = ref({
   pendingLogistics: 0,
   pendingDocuments: 0,
   pendingFinance: 0,
-  pendingAnnouncements: 0
+  pendingAnnouncements: 0,
+  pendingTradeFin: 0
 });
 
 // 获取badge数字
 async function loadBadges() {
   try {
-    const res = await request.get('/dashboard');
-    if (res.data.success) {
-      const data = res.data.data;
+    const body = await request.get('/dashboard');
+    const ok = body && (body.code === 200 || body.success);
+    if (ok) {
+      const data = body.data;
       // 从工作台数据中提取badge数字
       badges.value = {
         pendingReports: data.stats?.pendingReports || 0,
@@ -90,6 +92,11 @@ async function loadBadges() {
         pendingFinance: data.stats?.pendingFinance || 0,
         pendingAnnouncements: data.stats?.pendingAnnouncements || 0
       };
+    }
+    // 财务互通中心角标：同步失败 + 待复核预警（与参考项目一致）
+    const tf = await request.get('/trade-finance/dashboard');
+    if (tf && (tf.code === 200 || tf.success)) {
+      badges.value.pendingTradeFin = (tf.data?.sync?.failed || 0) + (tf.data?.sync?.pendingAlerts || 0);
     }
   } catch (e) {
     console.error('加载badge数字失败:', e);

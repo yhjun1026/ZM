@@ -25,7 +25,7 @@
             <span class="cat-tag" :style="{ background: catColor(a.category) + '15', color: catColor(a.category) }">{{ a.category }}</span>
             <strong class="announcement-title">{{ a.title }}</strong>
           </div>
-          <span class="announcement-date">{{ (a.published_at || a.created_at || '').substring(0, 10) }}</span>
+          <span class="announcement-date">{{ (a.created_at || a.published_at || '').substring(0, 10) }}</span>
         </div>
       </template>
       <el-empty v-else description="暂无公告" :image-size="60" />
@@ -143,11 +143,13 @@ const quickActions = [
 
 onMounted(async () => {
   try {
-    const res = await request.get('/dashboard');
-    if (res.data.success) {
-      stats.value = res.data.data.stats || {};
-      documents.value = res.data.data.docs || [];
-      announcements.value = res.data.data.announcements || [];
+    const body = await request.get('/dashboard');
+    // 兼容 {code:200,data} 与 {success:true,data} 两种响应
+    const ok = body && (body.code === 200 || body.success);
+    if (ok) {
+      stats.value = body.data.stats || {};
+      documents.value = body.data.docs || [];
+      announcements.value = body.data.announcements || [];
     }
   } catch (e) {
     console.error('加载工作台数据失败:', e);

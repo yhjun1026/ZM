@@ -45,12 +45,17 @@ app.use('/api/login', loginLimiter);
 
 // 认证：除 login/logout/health 外，所有 /api 需 JWT
 app.use('/api', (req, res, next) => {
-  if (['/login', '/logout', '/health'].includes(req.path)) return next();
+  if (['/login', '/logout', '/health', '/auth/login'].includes(req.path)) return next();
   authMiddleware(req, res, next);
 });
 
 // 业务路由
 app.use('/api', routes);
+
+// 上传文件静态托管（参考项目移植模块：合同附件/模板/打卡照片等）
+const uploadsDir = path.join(__dirname, '..', 'uploads');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+app.use('/uploads', express.static(uploadsDir));
 
 // 生产源码部署：前端已构建(web/dist 存在)时，由后端托管静态资源 + SPA 回退
 // （一个进程同时提供前端+API；dist 不存在时为纯 API，前端走 Vite 代理）
