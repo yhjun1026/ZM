@@ -3,8 +3,8 @@ const { success, fail } = require('../utils/response');
 
 async function dashboard(req, res) {
   try {
-    const apTotal = db.prepare('SELECT COALESCE(SUM(amount), 0) as total FROM trade_ap WHERE status = "待确认"').get().total;
-    const arTotal = db.prepare('SELECT COALESCE(SUM(amount), 0) as total FROM trade_ar WHERE status = "待确认"').get().total;
+    const apTotal = db.prepare("SELECT COALESCE(SUM(amount), 0) as total FROM trade_ap WHERE status = '待确认'").get().total;
+    const arTotal = db.prepare("SELECT COALESCE(SUM(amount), 0) as total FROM trade_ar WHERE status = '待确认'").get().total;
     
     return res.json(success({
       ap_balance: apTotal,

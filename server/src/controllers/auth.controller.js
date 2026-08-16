@@ -36,6 +36,7 @@ function login(req, res) {
   currentUser.id = user.id;
   currentUser.name = user.name;
   currentUser.avatar = user.name.charAt(0);
+  currentUser.avatarColor = user.avatar_color || currentUser.avatarColor || '#2563eb';
   currentUser.dept = user.dept;
   currentUser.role = user.role;
   currentUser.phone = user.phone;

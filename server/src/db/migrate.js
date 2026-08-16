@@ -13,6 +13,8 @@ const migrations = [
   require('./migrations/002_trips'),
   require('./migrations/003_sales_records'),
   require('./migrations/004_add_missing_tables'),
+  require('./migrations/005_seed_business_data'),
+  require('./migrations/006_align_reference_org'),
 ];
 
 const ALL_TABLES = [

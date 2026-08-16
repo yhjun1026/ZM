@@ -49,7 +49,7 @@ export const moduleGroups = [
       { path: '/permission', title: '权限管理', icon: 'Lock' },
       { path: '/logistics', title: '后勤管理', icon: 'Van', badge: 'pendingLogistics' },
       { path: '/documents', title: '公司文件', icon: 'Document', badge: 'pendingDocuments' },
-      { path: '/announcement', title: '公司公告', icon: 'Bell' },
+      { path: '/announcement', title: '公司公告', icon: 'Bell', badge: 'pendingAnnouncements' },
     ]
   },
   {

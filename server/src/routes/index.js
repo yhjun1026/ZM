@@ -35,6 +35,4 @@ router.use('/trade-archive', require('./tradeArchive.routes'));
 router.use('/trade-finance', require('./tradeFinance.routes'));
 router.use('/settings', require('./settings.routes'));
 
-module.exports = router);
-
 module.exports = router;

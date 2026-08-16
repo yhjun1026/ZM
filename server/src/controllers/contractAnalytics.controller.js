@@ -108,16 +108,17 @@ async function expiring(req, res) {
 async function departmentStats(req, res) {
   try {
     const stats = db.prepare(
-      `SELECT 
-        dept as department,
+      `SELECT
+        COALESCE(u.dept, '未分配') as department,
         COUNT(*) as total,
-        SUM(CASE WHEN status = '已生效' THEN 1 ELSE 0 END) as effective,
-        SUM(CASE WHEN status = '审批中' THEN 1 ELSE 0 END) as pending,
-        SUM(CASE WHEN status = '草稿' THEN 1 ELSE 0 END) as draft,
-        SUM(CASE WHEN status = '已归档' THEN 1 ELSE 0 END) as archived,
-        COALESCE(SUM(amount), 0) as totalAmount
-       FROM contracts
-       GROUP BY dept
+        SUM(CASE WHEN c.status IN ('已生效', '已盖章', '执行中') THEN 1 ELSE 0 END) as effective,
+        SUM(CASE WHEN c.status IN ('审批中', '待审批') THEN 1 ELSE 0 END) as pending,
+        SUM(CASE WHEN c.status = '草稿' THEN 1 ELSE 0 END) as draft,
+        SUM(CASE WHEN c.status = '已归档' THEN 1 ELSE 0 END) as archived,
+        COALESCE(SUM(c.amount), 0) as totalAmount
+       FROM contracts c
+       LEFT JOIN users u ON u.name = c.creator
+       GROUP BY COALESCE(u.dept, '未分配')
        ORDER BY total DESC`
     ).all();
 

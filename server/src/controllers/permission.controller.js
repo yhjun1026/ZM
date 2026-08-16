@@ -3,8 +3,11 @@ const { success, fail, parseJSON } = require('../utils/response');
 const auditLog = require('../utils/audit');
 
 function list(req, res) {
+  const countByRole = db.prepare("SELECT role, COUNT(*) as c FROM users WHERE status != '离职' GROUP BY role").all()
+    .reduce((m, r) => { m[r.role] = r.c; return m; }, {});
   const roles = db.prepare('SELECT * FROM roles ORDER BY id').all().map((r) => ({
     ...r,
+    users: countByRole[r.name] || 0,
     duties: parseJSON(r.duties) || [],
   }));
   const permMatrix = parseJSON(db.prepare('SELECT value FROM kv_store WHERE key=?').get('permMatrix').value);
@@ -43,12 +46,14 @@ function approve(req, res) {
 
 // 获取角色列表
 function listRoles(req, res) {
+  const countByRole = db.prepare("SELECT role, COUNT(*) as c FROM users WHERE status != '离职' GROUP BY role").all()
+    .reduce((m, r) => { m[r.role] = r.c; return m; }, {});
   const roles = db.prepare('SELECT * FROM roles ORDER BY id').all().map((r) => ({
     id: r.id,
     name: r.name,
     desc: r.desc_text,
     color: r.color,
-    users: r.users,
+    users: countByRole[r.name] || 0,
     level: r.level,
     scope: r.scope,
     duties: parseJSON(r.duties) || []

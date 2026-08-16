@@ -19,7 +19,7 @@
         </el-form-item>
         <el-button type="primary" :loading="loading" style="width: 100%" @click="onLogin">登 录</el-button>
       </el-form>
-      <p class="hint">演示账号 ZM001 / 123456</p>
+      <p class="hint">演示账号：ZM001 / zm2026（总经理）· ZM006 / xz2026（行政部）· ZM019 / xz2026（普通员工）· ZM026 / cw2026（财务部）</p>
     </el-card>
   </div>
 </template>
@@ -31,7 +31,7 @@ import { User, Lock } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import { useAuthStore } from '../stores/auth';
 
-const form = reactive({ username: 'ZM001', password: '123456' });
+const form = reactive({ username: 'ZM001', password: 'zm2026' });
 const loading = ref(false);
 const auth = useAuthStore();
 const router = useRouter();

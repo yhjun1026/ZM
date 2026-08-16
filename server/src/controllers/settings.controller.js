@@ -3,7 +3,7 @@
  */
 const db = require('../db');
 const { success, fail } = require('../utils/response');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 // 获取公司信息
 async function getCompanyInfo(req, res) {

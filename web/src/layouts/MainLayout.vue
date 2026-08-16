@@ -9,7 +9,7 @@
           <el-menu-item v-for="m in group.items" :key="m.path" :index="m.path">
             <el-icon><component :is="m.icon" /></el-icon>
             <span>{{ m.title }}</span>
-            <el-badge v-if="m.badge && badges[m.badge]" :value="badges[m.badge]" class="menu-badge" />
+            <el-badge v-if="m.badge" :value="badges[m.badge] || 0" class="menu-badge" />
           </el-menu-item>
         </template>
       </el-menu>
@@ -41,7 +41,7 @@
           <el-menu-item v-for="m in group.items" :key="m.path" :index="m.path">
             <el-icon><component :is="m.icon" /></el-icon>
             <span>{{ m.title }}</span>
-            <el-badge v-if="m.badge && badges[m.badge]" :value="badges[m.badge]" class="menu-badge" />
+            <el-badge v-if="m.badge" :value="badges[m.badge] || 0" class="menu-badge" />
           </el-menu-item>
         </template>
       </el-menu>
@@ -70,7 +70,8 @@ const badges = ref({
   activeProjects: 0,
   pendingLogistics: 0,
   pendingDocuments: 0,
-  pendingFinance: 0
+  pendingFinance: 0,
+  pendingAnnouncements: 0
 });
 
 // 获取badge数字
@@ -86,7 +87,8 @@ async function loadBadges() {
         activeProjects: data.stats?.activeProjects || 0,
         pendingLogistics: data.stats?.pendingLogistics || 0,
         pendingDocuments: data.stats?.pendingDocuments || 0,
-        pendingFinance: data.stats?.pendingFinance || 0
+        pendingFinance: data.stats?.pendingFinance || 0,
+        pendingAnnouncements: data.stats?.pendingAnnouncements || 0
       };
     }
   } catch (e) {
