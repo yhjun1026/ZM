@@ -41,4 +41,25 @@ function approve(req, res) {
   }
 }
 
-module.exports = { list, apply, approve };
+// 获取角色列表
+function listRoles(req, res) {
+  const roles = db.prepare('SELECT * FROM roles ORDER BY id').all().map((r) => ({
+    id: r.id,
+    name: r.name,
+    desc: r.desc_text,
+    color: r.color,
+    users: r.users,
+    level: r.level,
+    scope: r.scope,
+    duties: parseJSON(r.duties) || []
+  }));
+  return res.json(success(roles));
+}
+
+// 获取权限审计日志
+function listAuditLogs(req, res) {
+  const logs = db.prepare('SELECT * FROM perm_logs ORDER BY log_date DESC').all();
+  return res.json(success(logs));
+}
+
+module.exports = { list, apply, approve, listRoles, listAuditLogs };

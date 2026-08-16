@@ -12,6 +12,11 @@ const { notFound, errorHandler } = require('./middleware/error');
 const routes = require('./routes');
 
 const app = express();
+
+// 信任反向代理（nginx），正确处理 X-Forwarded-For 等头
+// 1 表示信任第一层代理
+app.set('trust proxy', 1);
+
 app.disable('x-powered-by');
 
 // 请求体大小限制

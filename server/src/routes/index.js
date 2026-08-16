@@ -23,5 +23,18 @@ router.use('/sales', require('./sales.routes'));
 router.use('/suppliers', require('./supplier.routes'));
 router.use('/documents', require('./document.routes'));
 router.use('/logistics', require('./logistics.routes'));
+router.use('/contract-analytics', require('./contractAnalytics.routes'));
+router.use('/contract-risk', require('./contractRisk.routes'));
+router.use('/contract-template', require('./contractTemplate.routes'));
+router.use('/partner-credit', require('./partnerCredit.routes'));
+router.use('/announcement', require('./announcement.routes'));
+router.use('/att-archive', require('./attArchive.routes'));
+router.use('/trade-customer', require('./tradeCustomer.routes'));
+router.use('/trade-supplier', require('./tradeSupplier.routes'));
+router.use('/trade-archive', require('./tradeArchive.routes'));
+router.use('/trade-finance', require('./tradeFinance.routes'));
+router.use('/settings', require('./settings.routes'));
+
+module.exports = router);
 
 module.exports = router;
