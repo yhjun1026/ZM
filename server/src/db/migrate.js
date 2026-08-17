@@ -8,16 +8,7 @@
 const db = require('./index');
 const logger = require('../utils/logger');
 
-const migrations = [
-  require('./migrations/001_init'),
-  require('./migrations/002_trips'),
-  require('./migrations/003_sales_records'),
-  require('./migrations/004_add_missing_tables'),
-  require('./migrations/005_seed_business_data'),
-  require('./migrations/006_align_reference_org'),
-  require('./migrations/007_reference_schema'),
-  require('./migrations/008_reference_business_data'),
-];
+const migrations = require('./migrations');
 
 const ALL_TABLES = [
   'audit_log', 'business_trips', 'system_settings', 'notifications',

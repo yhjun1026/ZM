@@ -2,6 +2,11 @@ const bcrypt = require('bcryptjs');
 const config = require('./config');
 const db = require('./db');
 const logger = require('./utils/logger');
+
+// 启动自愈:加载 app(及业务路由)之前,自动执行结构迁移(幂等,仅建表/补列)。
+// 移植自参考项目的路由在 require 时会做表结构迁移,要求基础表已存在。
+require('./db/ensureSchema')();
+
 const app = require('./app');
 
 /**
