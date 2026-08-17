@@ -11,11 +11,15 @@ request.interceptors.request.use((config) => {
 });
 
 // 响应拦截：成功返回 body；失败统一提示并返回 {success:false}
+// config.silent = true 时静默处理(用于聚合页容错拉取,如驾驶舱)
 request.interceptors.response.use(
   (resp) => resp.data,
   (error) => {
     const status = error.response?.status;
     const data = error.response?.data;
+    if (error.config?.silent) {
+      return data || { success: false, code: status || 500, message: error.message };
+    }
     if (status === 401) {
       localStorage.removeItem('zm_token');
       localStorage.removeItem('zm_user');

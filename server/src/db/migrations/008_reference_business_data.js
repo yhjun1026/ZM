@@ -292,7 +292,7 @@ module.exports = {
     reports.forEach((r) => insRpt.run(...r));
     console.log(`[Migration 008] 工作汇报: ${reports.length} 条`);
 
-    // 公告：重写为参考数据（带审批流）
+    // 公告：重写为参考数据（带审批流）；参考表结构部门列为 author_dept
     db.prepare('DELETE FROM announcements').run();
     const annDone = JSON.stringify([
       { step: '行政部录入', user: '刘文博', time: '2026-08-01 09:00:00', done: true },
@@ -315,7 +315,7 @@ module.exports = {
       ['GG-006', '关于开展全员网络安全培训的通知', '公司培训通知', '为提升员工网络安全意识，公司定于2026年8月18日下午14:00在三楼培训室开展全员网络安全培训。', '刘文博', '行政部', '已发布', annDone, '2026-08-10 10:00:00'],
       ['GG-007', '关于召开月度部门负责人工作会议的通知', '会议通知', '定于2026年8月16日上午9:00在二楼会议室召开月度部门负责人工作会议。', '刘文博', '行政部', '已发布', annDone, '2026-08-09 10:00:00'],
     ];
-    const insAnn = db.prepare('INSERT OR REPLACE INTO announcements (id,title,category,content,author,dept,status,flow,created_at) VALUES (?,?,?,?,?,?,?,?,?)');
+    const insAnn = db.prepare('INSERT OR REPLACE INTO announcements (id,title,category,content,author,author_dept,status,flow,created_at) VALUES (?,?,?,?,?,?,?,?,?)');
     anns.forEach((a) => insAnn.run(...a));
     console.log(`[Migration 008] 公司公告: ${anns.length} 条`);
 
@@ -345,6 +345,19 @@ module.exports = {
     if (db.prepare('SELECT COUNT(*) c FROM t_company_info').get().c === 0) {
       db.prepare('INSERT OR IGNORE INTO t_company_info (id, company_name) VALUES (1, ?)').run('四川卓盟科技有限公司');
       console.log('[Migration 008] 公司信息: 1 条');
+    }
+
+    // 进销存/客户/供应商台账(t_cm_customers/t_sm_suppliers 等)从旧表同步存量
+    // 注意:partner_common 在 require 时建表,必须先加载再判断空表
+    try {
+      require('../../compat/trade_sync'); // require 时建 t_tr_* 表(importLegacy 依赖 t_tr_so 等)
+      const { importLegacy } = require('../../compat/partner_common');
+      if (db.prepare('SELECT COUNT(*) c FROM t_cm_customers').get().c === 0) {
+        const r = importLegacy('系统初始化');
+        console.log(`[Migration 008] 存量同步: 客户 ${r.customers} 家、供应商 ${r.suppliers} 家`);
+      }
+    } catch (e) {
+      console.log('[Migration 008] 存量同步跳过:', e.message);
     }
 
     db.prepare("INSERT OR REPLACE INTO kv_store (key, value) VALUES ('seed_008_done', '1')").run();

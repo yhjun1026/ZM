@@ -12,10 +12,11 @@ module.exports = {
   up() {},
 
   seed(db) {
-    // 生产保护：此迁移会覆盖用户/部门/角色（含密码重置为参考默认值），
-    // 仅在显式设置 ALIGN_REFERENCE_ORG=1 时执行，避免生产库被每次启动重置。
-    if (process.env.ALIGN_REFERENCE_ORG !== '1') {
-      console.log('[Migration 006] 跳过（设置 ALIGN_REFERENCE_ORG=1 才会执行组织对齐）');
+    // 一次性对齐：kv 标记守卫,只执行一次(重复执行会覆盖用户密码/角色)。
+    // 如需强制重跑:删除 kv_store 中 seed_006_done 记录。
+    const done = db.prepare("SELECT value FROM kv_store WHERE key='seed_006_done'").get();
+    if (done) {
+      console.log('[Migration 006] 已执行过，跳过');
       return;
     }
     // ===== 1. 用户（与参考项目 seed 对齐） =====
@@ -97,5 +98,7 @@ module.exports = {
       insRole.run(name, desc, color, level, scope, scopeDesc, cCreate, cEdit, cDelete, cApprove, JSON.stringify(duties))
     );
     console.log(`[Migration 006] 角色: ${roles.length} 条（已对齐参考项目）`);
+
+    db.prepare("INSERT OR REPLACE INTO kv_store (key, value) VALUES ('seed_006_done', '1')").run();
   },
 };

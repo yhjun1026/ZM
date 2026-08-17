@@ -96,13 +96,13 @@ async function load() {
   loading.value = true;
   try {
     const results = await Promise.allSettled([
-      request.get('/sales/overview'),
-      request.get('/sales/monthly'),
-      request.get('/hr/stats'),
-      request.get('/customers'),
-      request.get('/finance/overview'),
-      request.get('/dashboard'),
-      request.get('/hr/employees'),
+      request.get('/sales/overview', { silent: true }),
+      request.get('/sales/monthly', { silent: true }),
+      request.get('/hr/stats', { silent: true }),
+      request.get('/customers', { silent: true }),
+      request.get('/finance/overview', { silent: true }),
+      request.get('/dashboard', { silent: true }),
+      request.get('/hr/employees', { silent: true }),
     ]);
     const val = (i, fb) => (results[i].status === 'fulfilled' ? unwrap(results[i].value, fb) : fb);
 

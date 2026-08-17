@@ -5,9 +5,13 @@ const logger = require('./utils/logger');
 
 // 启动自愈:加载 app(及业务路由)之前,自动执行结构迁移(幂等,仅建表/补列)。
 // 移植自参考项目的路由在 require 时会做表结构迁移,要求基础表已存在。
-require('./db/ensureSchema')();
+const { ensureSchema, ensureSeeds } = require('./db/ensureSchema');
+ensureSchema();
 
 const app = require('./app');
+
+// 种子数据在路由加载后执行(部分表由路由/公共库 require 时创建),幂等一次性。
+ensureSeeds();
 
 /**
  * 启动时把明文密码升级为 bcrypt 哈希（兼容旧数据 / 种子数据）。

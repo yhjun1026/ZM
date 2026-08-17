@@ -9,7 +9,7 @@ function notFound(req, res) {
 /** 统一错误处理：捕获所有未处理异常，避免向前端暴露堆栈 */
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, next) {
-  logger.error('[UNHANDLED] %s', err.stack || err.message);
+  logger.error(`[UNHANDLED] ${err.stack || err.message}`);
   const msg = process.env.NODE_ENV === 'production' ? '服务器内部错误' : err.message;
   res.status(500).json({ success: false, data: null, message: msg });
 }

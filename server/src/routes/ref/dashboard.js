@@ -38,8 +38,8 @@ router.get('/', (req, res) => {
   const customerStats = db.prepare("SELECT level, COUNT(*) as c FROM customers GROUP BY level").all();
   const totalCustomers = db.prepare("SELECT COUNT(*) as c FROM customers").get().c;
 
-  // 公司公告（已发布，最新5条）
-  const announcements = db.prepare("SELECT id,title,category,author,dept,created_at FROM announcements WHERE status='已发布' ORDER BY created_at DESC LIMIT 5").all();
+  // 公司公告（已发布，最新5条；参考表结构部门列为 author_dept）
+  const announcements = db.prepare("SELECT id,title,category,author,author_dept as dept,created_at FROM announcements WHERE status='已发布' ORDER BY created_at DESC LIMIT 5").all();
 
   // 菜单角标统计
   const badgeStats = {
