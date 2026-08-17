@@ -1,85 +1,121 @@
 <template>
-  <div>
-    <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
-      <div><h2>合同审批</h2><p>合同提交、审批与进度</p></div>
-      <el-button type="primary" @click="openCreate"><el-icon><Plus /></el-icon> 新建合同</el-button>
+  <div class="contract-page">
+    <div class="page-header">
+      <h2>合同管理</h2>
+      <p>合同全生命周期管理：主信息、审批、变更、终止、借阅、台账与权限</p>
     </div>
-    <el-card>
-      <el-table :data="records" stripe>
-        <el-table-column prop="id" label="合同编号" width="130" />
-        <el-table-column prop="name" label="名称" min-width="180" />
-        <el-table-column prop="customer" label="客户" width="160" />
-        <el-table-column prop="type" label="类型" width="90" />
-        <el-table-column label="金额" width="120"><template #default="{ row }">¥{{ Number(row.amount || 0).toLocaleString() }}</template></el-table-column>
-        <el-table-column label="进度" width="120"><template #default="{ row }"><el-progress :percentage="row.progress || 0" /></template></el-table-column>
-        <el-table-column label="状态" width="90"><template #default="{ row }"><el-tag :type="statusType(row.status)" size="small">{{ row.status }}</el-tag></template></el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
-          <template #default="{ row }">
-            <template v-if="row.status === '待审批' && canApprove">
-              <el-button size="small" type="success" @click="onApprove(row, '执行中')">通过</el-button>
-              <el-button size="small" type="danger" @click="onApprove(row, '已驳回')">驳回</el-button>
-            </template>
-            <el-button size="small" type="danger" @click="onDelete(row)" :icon="Delete"></el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </el-card>
 
-    <el-dialog v-model="dlg.visible" title="新建合同" width="560px">
-      <el-form :model="dlg.form" label-width="90px">
-        <el-form-item label="合同编号" required><el-input v-model="dlg.form.id" /></el-form-item>
-        <el-form-item label="合同名称" required><el-input v-model="dlg.form.name" /></el-form-item>
-        <el-form-item label="客户"><el-input v-model="dlg.form.customer" /></el-form-item>
-        <el-form-item label="类型"><el-select v-model="dlg.form.type"><el-option label="销售合同" value="销售合同" /><el-option label="服务合同" value="服务合同" /><el-option label="采购合同" value="采购合同" /></el-select></el-form-item>
-        <el-form-item label="金额"><el-input-number v-model="dlg.form.amount" :min="0" /></el-form-item>
-        <el-row><el-col :span="12"><el-form-item label="开始日期"><el-date-picker v-model="dlg.form.startDate" value-format="YYYY-MM-DD" /></el-form-item></el-col><el-col :span="12"><el-form-item label="结束日期"><el-date-picker v-model="dlg.form.endDate" value-format="YYYY-MM-DD" /></el-form-item></el-col></el-row>
-      </el-form>
-      <template #footer><el-button @click="dlg.visible = false">取消</el-button><el-button type="primary" :loading="dlg.saving" @click="onSubmit">提交</el-button></template>
-    </el-dialog>
+    <!-- 标签页导航（1:1 还原参考项目 cm-tabs） -->
+    <div class="cm-tabs">
+      <button v-for="t in tabs" :key="t.key" class="cm-tab" :class="{ active: activeTab === t.key }" @click="switchTab(t.key)">
+        <el-icon style="vertical-align:-2px;margin-right:4px;"><component :is="t.icon" /></el-icon>{{ t.label }}
+      </button>
+    </div>
+
+    <div class="cm-content">
+      <!-- 合同主信息：列表 / 详情编辑器 -->
+      <template v-if="activeTab === 'main_form'">
+        <ContractFormDetail
+          v-if="formDetailId !== null"
+          :id="formDetailId"
+          @back="closeFormDetail"
+          @goto="switchTab"
+          @open="openFormDetail"
+        />
+        <ContractMainForm v-else :key="mainFormKey" @open="openFormDetail" />
+      </template>
+      <ContractList v-else-if="activeTab === 'list'" />
+      <ContractChanges v-else-if="activeTab === 'changes'" />
+      <ContractChangeFlow v-else-if="activeTab === 'change_flow'" />
+      <ContractTerminations v-else-if="activeTab === 'terminations'" />
+      <ContractEndFlow v-else-if="activeTab === 'end_flow'" />
+      <ContractBorrowFlow v-else-if="activeTab === 'borrow_flow'" />
+      <ContractBorrows v-else-if="activeTab === 'borrows'" />
+      <ContractLedger v-else-if="activeTab === 'ledger'" />
+      <ContractExpiry v-else-if="activeTab === 'expiry'" />
+      <ContractTemplates v-else-if="activeTab === 'templates'" />
+      <ContractLogs v-else-if="activeTab === 'logs'" />
+      <ContractPermRules v-else-if="activeTab === 'perm_rules'" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, computed, onMounted } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { Plus, Delete } from '@element-plus/icons-vue';
-import { getContracts, addContract, approveContract, deleteContract } from '../api/modules';
-import { useAuthStore } from '../stores/auth';
+import { ref } from 'vue';
+import {
+  EditPen, Document, Edit, Share, CircleClose, CircleCloseFilled, Reading, Notebook,
+  List, Warning, CopyDocument, Clock, Lock,
+} from '@element-plus/icons-vue';
+import ContractMainForm from './contract/ContractMainForm.vue';
+import ContractFormDetail from './contract/ContractFormDetail.vue';
+import ContractList from './contract/ContractList.vue';
+import ContractChanges from './contract/ContractChanges.vue';
+import ContractChangeFlow from './contract/ContractChangeFlow.vue';
+import ContractTerminations from './contract/ContractTerminations.vue';
+import ContractEndFlow from './contract/ContractEndFlow.vue';
+import ContractBorrowFlow from './contract/ContractBorrowFlow.vue';
+import ContractBorrows from './contract/ContractBorrows.vue';
+import ContractLedger from './contract/ContractLedger.vue';
+import ContractExpiry from './contract/ContractExpiry.vue';
+import ContractTemplates from './contract/ContractTemplates.vue';
+import ContractLogs from './contract/ContractLogs.vue';
+import ContractPermRules from './contract/ContractPermRules.vue';
 
-const auth = useAuthStore();
-const records = ref([]);
+const tabs = [
+  { key: 'main_form', label: '合同主信息', icon: EditPen },
+  { key: 'list', label: '合同列表', icon: Document },
+  { key: 'changes', label: '合同变更', icon: Edit },
+  { key: 'change_flow', label: '变更审批', icon: Share },
+  { key: 'terminations', label: '合同终止/解除', icon: CircleClose },
+  { key: 'end_flow', label: '终止审批', icon: CircleCloseFilled },
+  { key: 'borrow_flow', label: '借阅审批', icon: Reading },
+  { key: 'borrows', label: '借阅记录', icon: Notebook },
+  { key: 'ledger', label: '合同台账', icon: List },
+  { key: 'expiry', label: '到期预警', icon: Warning },
+  { key: 'templates', label: '模板库', icon: CopyDocument },
+  { key: 'logs', label: '操作日志', icon: Clock },
+  { key: 'perm_rules', label: '权限规则', icon: Lock },
+];
 
-// 审批权限：非普通员工才能审批
-const canApprove = computed(() => {
-  return auth.user && auth.user.role !== '普通员工';
-});
+const activeTab = ref('main_form');
+const formDetailId = ref(null); // null = 主信息列表；'new' 或合同ID = 详情/编辑器
+const mainFormKey = ref(0);
 
-async function load() {
-  const r = await getContracts();
-  if (r.success) records.value = r.data || [];
+function switchTab(key) {
+  activeTab.value = key;
+  if (key !== 'main_form') formDetailId.value = null;
 }
-onMounted(load);
-function statusType(s) { return s === '执行中' ? 'success' : s === '已完成' ? 'info' : s === '已驳回' ? 'danger' : 'warning'; }
 
-const dlg = reactive({ visible: false, saving: false, form: {} });
-function openCreate() {
-  dlg.form = { id: '', name: '', customer: '', type: '销售合同', amount: 0, startDate: '', endDate: '' };
-  dlg.visible = true;
+function openFormDetail(id) {
+  formDetailId.value = id;
 }
-async function onSubmit() {
-  if (!dlg.form.id || !dlg.form.name) { ElMessage.warning('请填写编号和名称'); return; }
-  dlg.saving = true;
-  const r = await addContract({ ...dlg.form, creator: auth.userName });
-  dlg.saving = false;
-  if (r.success) { ElMessage.success('提交成功'); dlg.visible = false; load(); }
-}
-async function onApprove(row, status) {
-  const r = await approveContract(row.id, { status, approver: auth.userName });
-  if (r.success) { ElMessage.success('已更新'); load(); }
-}
-async function onDelete(row) {
-  try { await ElMessageBox.confirm(`确认删除合同「${row.id}」？`, '提示', { type: 'warning' }); } catch { return; }
-  const r = await deleteContract(row.id);
-  if (r.success) { ElMessage.success('已删除'); load(); }
+
+function closeFormDetail() {
+  formDetailId.value = null;
+  mainFormKey.value++; // 返回列表时刷新统计与列表
 }
 </script>
+
+<style scoped>
+.cm-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid #e5e7eb;
+  margin-bottom: 20px;
+  overflow-x: auto;
+}
+.cm-tab {
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  color: #606266;
+  font-size: 14px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all .2s;
+  white-space: nowrap;
+}
+.cm-tab:hover { color: var(--el-color-primary); }
+.cm-tab.active { color: var(--el-color-primary); border-bottom-color: var(--el-color-primary); font-weight: 600; }
+</style>

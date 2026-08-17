@@ -27,7 +27,8 @@ const config = {
       .filter(Boolean),
   },
   rateLimit: {
-    global: parseInt(process.env.RATE_LIMIT_GLOBAL || '60', 10),
+    // 开发环境放宽（页面一次并行拉多个接口），生产可用环境变量收紧
+    global: parseInt(process.env.RATE_LIMIT_GLOBAL || (process.env.NODE_ENV === 'production' ? '300' : '2000'), 10),
     login: parseInt(process.env.RATE_LIMIT_LOGIN || '5', 10),
   },
 };
