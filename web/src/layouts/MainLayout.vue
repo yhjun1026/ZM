@@ -9,7 +9,7 @@
           <el-menu-item v-for="m in group.items" :key="m.path" :index="m.path">
             <el-icon><component :is="m.icon" /></el-icon>
             <span>{{ m.title }}</span>
-            <el-badge v-if="m.badge" :value="badges[m.badge] || 0" class="menu-badge" />
+            <span v-if="m.badge && badges[m.badge]" class="menu-badge">{{ badges[m.badge] }}</span>
           </el-menu-item>
         </template>
       </el-menu>
@@ -41,7 +41,7 @@
           <el-menu-item v-for="m in group.items" :key="m.path" :index="m.path">
             <el-icon><component :is="m.icon" /></el-icon>
             <span>{{ m.title }}</span>
-            <el-badge v-if="m.badge" :value="badges[m.badge] || 0" class="menu-badge" />
+            <span v-if="m.badge && badges[m.badge]" class="menu-badge">{{ badges[m.badge] }}</span>
           </el-menu-item>
         </template>
       </el-menu>
@@ -154,15 +154,38 @@ onMounted(() => {
 }
 
 .menu-badge {
-  margin-left: 8px;
-}
-
-.menu-badge :deep(.el-badge__content) {
-  background: #ef4444;
-  font-size: 11px;
+  margin-left: auto;
+  min-width: 16px;
   height: 16px;
   line-height: 16px;
   padding: 0 5px;
+  border-radius: 8px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  box-shadow: 0 0 0 1.5px #1f2937;
+  flex-shrink: 0;
+}
+
+:deep(.el-menu-item) {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+  height: 48px;
+  line-height: 48px;
+  padding-right: 16px;
+}
+
+:deep(.el-menu-item .el-icon) {
+  flex-shrink: 0;
+}
+
+:deep(.el-menu-item span:not(.menu-badge)) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .topbar {
@@ -202,12 +225,6 @@ onMounted(() => {
 
 :deep(.el-drawer__body) {
   padding: 0;
-}
-
-/* 移动端菜单项样式 */
-:deep(.el-menu-item) {
-  height: 50px;
-  line-height: 50px;
 }
 
 /* 移动端适配 */
