@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="4FaDRlSmmifBRNF2V8f6JC">
+<head data-page-node-id="hStWsRWPQ9DsKTmiok6Ejw">
+<meta charset="UTF-8" data-page-node-id="ujgcN356TpYZj0gGU4cOIG">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="QP8hAgNC0RU96uEjIH472a">
+<title>ZM 项目差异对比与迁移规划</title>
+<style>
+  :root{
+    --bg:#f7f8fa; --card:#fff; --bd:#e5e7eb; --tx:#1f2328; --tx2:#5b6472;
+    --pri:#2563eb; --ok:#16a34a; --warn:#d97706; --bad:#dc2626; --gray:#94a3b8;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--tx);
+    font:14px/1.6 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}
+  .wrap{max-width:1280px;margin:0 auto;padding:32px 24px 64px}
+  h1{font-size:26px;margin:0 0 6px}
+  .sub{color:var(--tx2);margin-bottom:28px}
+  h2{font-size:19px;margin:36px 0 14px;padding-left:10px;border-left:4px solid var(--pri)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:8px}
+  .card{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:16px 18px}
+  .card .k{color:var(--tx2);font-size:12px;letter-spacing:.5px}
+  .card .v{font-size:26px;font-weight:650;margin-top:4px}
+  .card .d{font-size:12px;color:var(--tx2);margin-top:2px}
+  table{width:100%;border-collapse:collapse;background:var(--card);
+    border:1px solid var(--bd);border-radius:10px;overflow:hidden;font-size:13px}
+  th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--bd);vertical-align:top}
+  th{background:#f1f3f6;font-weight:600;color:var(--tx2);font-size:12px;white-space:nowrap}
+  tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:#fafbfc}
+  .tag{display:inline-block;padding:1px 8px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+  .t-ok{background:#dcfce7;color:#15803d}
+  .t-part{background:#fef3c7;color:#b45309}
+  .t-miss{background:#fee2e2;color:#b91c1c}
+  .t-p0{background:#fee2e2;color:#b91c1c}
+  .t-p1{background:#ffedd5;color:#c2410c}
+  .t-p2{background:#e0e7ff;color:#4338ca}
+  .bar{height:8px;background:#eef1f5;border-radius:5px;overflow:hidden;min-width:90px}
+  .bar i{display:block;height:100%;border-radius:5px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+  .filters button{border:1px solid var(--bd);background:var(--card);padding:5px 14px;
+    border-radius:20px;cursor:pointer;font-size:12.5px;color:var(--tx2)}
+  .filters button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+  .note{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;margin:14px 0;font-size:13px}
+  .note b{color:#92400e}
+  code{background:#f1f3f6;padding:1px 5px;border-radius:4px;font-size:12px}
+  .grp{background:#f8fafc;font-weight:600;color:var(--tx2)}
+  ul{margin:8px 0;padding-left:20px}
+  li{margin:3px 0}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:900px){.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body data-page-node-id="ELOwAvGwEFMRrcOrfFYXVJ">
+<div class="wrap" data-page-node-id="K6lQhTxrvHCGHDGmihxs8P">
+
+<h1 data-page-node-id="gE6CaUDW6AMOs2bQvHPhvR">ZM 智办公 · 双版本差异对比与迁移规划</h1>
+<div class="sub" data-page-node-id="alB2sLqT5VcqA85gIjEdY4">
+  基准：<b data-page-node-id="KvDSZZHsRndFYPk5VNnHyL">参考项目</b> <code data-page-node-id="TapLWfYwQ8hraVzM2uMOsC">~/Downloads/ZM/源代码</code>（单体 SPA + Express，迭代至第 73 轮 / 2026-09-06）
+  &nbsp;→&nbsp; 目标：<b data-page-node-id="5MjEbjqb9AydQN0YC6AACb">当前项目</b> <code data-page-node-id="EA5tGojuZzmGGmlra9RNL8">~/code/ZM</code>（Vite+Vue3 前端 / Express 纯 API 后端）
+</div>
+
+<h2 data-page-node-id="0L27vs0R6iV1aUqmQw77uf">一、总体规模对比</h2>
+<div class="cards" data-page-node-id="WGaW6Z9Jsng35DIq3rRInW">
+  <div class="card" data-page-node-id="I7slt6ZnvZfvhFkVO7w42t"><div class="k" data-page-node-id="hiL2NgjAS3jlePfUzlHVXf">业务模块（菜单）</div><div class="v" data-page-node-id="DJ80ZiAylb2xYE1bXZYT43">36 <span style="font-size:14px;color:var(--gray)" data-page-node-id="lqyZnMQSH8MB1jWCHVxuAP">vs 30</span></div><div class="d" data-page-node-id="NWNDggLZwqjC3FU34qdNqB">参考 6 大分组 / 当前 7 大分组</div></div>
+  <div class="card" data-page-node-id="cDWhT3trHamVtH2HkccW4a"><div class="k" data-page-node-id="E8rPBI9ZfkwoyIAIdcXOYt">数据库表</div><div class="v" data-page-node-id="VqC6GOI0x04vysZDAxGnD7">131 <span style="font-size:14px;color:var(--gray)" data-page-node-id="Y48NUvEXS8sk5aD1lmo93G">vs 74</span></div><div class="d" data-page-node-id="VdEyoF0pCXZ2BnNVBSqLHQ">仅 18 张同名，命名体系已分叉</div></div>
+  <div class="card" data-page-node-id="olomlAC27aWJ4m8L8uxMgI"><div class="k" data-page-node-id="xWT3dCUMqsTmNvgJa6IS19">后端 API 端点</div><div class="v" data-page-node-id="pP1DGq8KbqfOZtkFW6Hbhb">509 <span style="font-size:14px;color:var(--gray)" data-page-node-id="KeSMhI8mVSjKYDptgbwZj1">vs 357</span></div><div class="d" data-page-node-id="EYFDWNW4vT38PSpbxqMO65">当前含 51 组已移植路由</div></div>
+  <div class="card" data-page-node-id="34d3OztNnhUmoth9oYPlCW"><div class="k" data-page-node-id="zNrwa6DvqdHRRCZCbJjAca">前端页面</div><div class="v" data-page-node-id="zyOsnb72Qh7dlfwZAMCMLn">113 <span style="font-size:14px;color:var(--gray)" data-page-node-id="wDI1LNKVx8WJsIFtxvgEuh">vs 35</span></div><div class="d" data-page-node-id="roDSPoVYW8UdXTOYm8crSk">参考为单文件 SPA（979 KB）</div></div>
+  <div class="card" data-page-node-id="yAZqPmJ2H5AySLMCQ1eebW"><div class="k" data-page-node-id="RH8IKfSexnBgKi04yC65f4">核心路由代码</div><div class="v" data-page-node-id="T0LBCPKYG58RT0gQEa7T22">20k <span style="font-size:14px;color:var(--gray)" data-page-node-id="ZuDHsAY0Hv9ByNDd1NWFG4">行 vs 12k</span></div><div class="d" data-page-node-id="err5MX68fuPzEOzAcJGbqo">approvals 单个 2554 vs 191 行</div></div>
+</div>
+
+<div class="note" data-page-node-id="k9R3YGVgxoRr8hc9vhn7mC">
+<b data-page-node-id="6qiJQ4z8KUcIWCxKBcbfhr">关键结论：</b>两套系统并非「新旧版本」关系，而是<b data-page-node-id="TTNFceRJf2TQO4AUBpuslY">平行演进的两套实现</b>。当前项目已完成一轮移植（<code data-page-node-id="m4eE5RFS3RnCgpgIEzyMQl">server/src/routes/ref/</code> 51 组 + 迁移 007/008 建表补列），
+但采用的是<b data-page-node-id="SKVyVAPCo1QisjF28lpmOX">自有表结构</b>（<code data-page-node-id="7ih2zY22iHRpEOFueiDxHz">t_contract_* </code>、<code data-page-node-id="JEjuqdT3WxI92Y0840YEim">contracts</code>、<code data-page-node-id="ldP2JdKsNYC5Y9PjQCCDTY">leaves</code>…），与参考项目（<code data-page-node-id="OSIi36YYZzG4ozP6lFtF7Y">t_contract_main</code>、<code data-page-node-id="ADoylRHNByCSE8Ly0l2ufI">leave_requests</code>…）<b data-page-node-id="2u1AXegiIdFhepnEVzhigy">命名体系已分叉</b>，
+因此迁移不是简单覆盖文件，而是「<b data-page-node-id="kdwuO24rbj771gVIg2hgv7">功能逻辑对齐 + 结构落到当前框架</b>」的改造式移植。
+</div>
+
+<h2 data-page-node-id="UonBDpr9wKFDLmG8SMKREz">二、模块级覆盖对照</h2>
+<div class="filters" data-page-node-id="6j8E4C5jhPQ2kHxzKUxSuL">
+  <button class="on" data-f="all" data-page-node-id="sgSAHCN6RcQlRCl5APPfic">全部 36</button>
+  <button data-f="miss" data-page-node-id="2jQVSeu8ODTIeCRoF1N0M5">完全缺失 19</button>
+  <button data-f="part" data-page-node-id="Zx5pUdzOVv3SsstYx4LD3s">部分覆盖 13</button>
+  <button data-f="ok" data-page-node-id="etLEXFCsS28JblTvAHAx95">基本具备 4</button>
+</div>
+<table id="tbl" data-page-node-id="q5dylmO4HfjrCFTfw99IU5">
+  <thead data-page-node-id="Y3rDB627XppmeLIciGYXHG"><tr data-page-node-id="9yZWLKVRKD4oGDrr5Ro9Ji">
+    <th style="width:88px" data-page-node-id="86Qw5IG4wyNkzTcpGNUWds">分组</th><th style="width:110px" data-page-node-id="GEDkkBHvqIzClQmf8CwE82">模块 Key</th><th style="width:110px" data-page-node-id="BcNfWxn4lUbohGGGw9LBq7">模块名</th>
+    <th style="width:96px" data-page-node-id="84XGQNqORYNPJCOIx1H1U7">状态</th><th style="width:120px" data-page-node-id="8K9MumXdkf1HAFLQ0T5oZQ">覆盖度</th>
+    <th data-page-node-id="Qfd7dgMenIpZmapR1lUQ2y">当前项目对应实现</th><th data-page-node-id="XaOUlEStGURdNM5eRQ7QJm">缺口 / 需迁移内容</th>
+  </tr></thead>
+  <tbody id="tb" data-page-node-id="eZ82KOkdJM6rq4T66L4MCd"></tbody>
+</table>
+
+<h2 data-page-node-id="v4bXWbYNSnZl01AnQkE7JG">三、优先级与分批建议</h2>
+<table data-page-node-id="ErioDHvbTwI9LOYRhqGhPV">
+  <thead data-page-node-id="DsMq4kQhGyhfPv27lxYesz"><tr data-page-node-id="9ggjfVu5JW4cF3p2bLDb6E"><th style="width:70px" data-page-node-id="GWIplImuKTKcgPgpNyta6x">批次</th><th style="width:200px" data-page-node-id="nlN12HZU67SRnmjE618Ggm">模块</th><th style="width:70px" data-page-node-id="hIVzN6sHGWsOMOxPEsldRG">优先级</th><th data-page-node-id="A5CePvc8FX1Z4yaRMxM3Dw">迁移要点</th></tr></thead>
+  <tbody data-page-node-id="dnZCuxBpQJ5zOsEIuTR1GE">
+    <tr data-page-node-id="ByJBIY8HLe0IyI9NZpyJhD"><td rowspan="5" data-page-node-id="1QLL4bwHFQcBVJPNEW4De3"><b data-page-node-id="KBY6dEmIvcDaBxOo6G9R1R">第 1 批</b><br data-page-node-id="bKETndnGeld8hnMdhJy4h0"><span class="tag t-p0" data-page-node-id="14FhqUVD7x6MRmd36dB7g1">业务闭环</span></td>
+      <td data-page-node-id="CTXeyzTrSxVKz5u17rUaEf">approval 审批中心</td><td data-page-node-id="g3yOnanH7gYtE8JdQPEuIE"><span class="tag t-p0" data-page-node-id="RBAw8yM0ZWngJomGgOzaWs">P0</span></td>
+      <td data-page-node-id="wHurbNEHvetj5jpsTkFClM">参考 2554 行 vs 当前 191 行。需补齐：49 类审批链 <code data-page-node-id="eIgVvZ6xekDNFGUewaEniO">buildApprovalChain</code>、自定义流程 <code data-page-node-id="FKGbHNN1VFqeY2qHlFBVJs">approval_flow_cfg</code>、流程变更闸门（第69轮）、流程图总览、催办、转办/委托、加签、评论/附件、收藏</td></tr>
+    <tr data-page-node-id="BPliD1bvP7w4VPAbqzMAXd"><td data-page-node-id="O6or6zgbYCEFJzWpw0waZr">org / dept / hr 组织人事</td><td data-page-node-id="832ozr4Or5Kyb7IFbwlbWC"><span class="tag t-p0" data-page-node-id="Ld65FTouJfHL4dbceAv33v">P0</span></td>
+      <td data-page-node-id="DhZMFEzMxR8Bz3q5GA8oEX">组织树（编制/负责人）、部门职责、员工全生命周期（入职建档→转正→调岗→离职）、招聘（需求/候选人/Offer）、<b data-page-node-id="azw3DeFH97xY8eDuNSmLHv">内部通讯录</b>、账号开通收口 ADM（第66轮）</td></tr>
+    <tr data-page-node-id="FX5KvHMqwjyUYzibwP8mB9"><td data-page-node-id="BnjmhQk8ckcxGw1A5WxZ2G">bid + bidgen 招投标</td><td data-page-node-id="x7PU4JT32agkUI3VqcjRUs"><span class="tag t-p0" data-page-node-id="l7oED6LqjMcKE81IAem2Nm">P0</span></td>
+      <td data-page-node-id="Uc2w9HFFebDDFkpnpEaqeL">投标项目/标书章节/知识库(50条)/模板(45章)/评审/文件、Word 导入导出、招标导入、查看授权 <code data-page-node-id="hMntaBGz3RXCux1nx9VHgE">bid_view_grants</code></td></tr>
+    <tr data-page-node-id="s3hY3LZFTmAxLhaKx2FcIY"><td data-page-node-id="uWbW5lwYfZYQKbie6cF6dq">dms + supply 经销商与渠道</td><td data-page-node-id="9Oop208cWTBXL36v9MZ5Es"><span class="tag t-p0" data-page-node-id="CbO9hm43Bj09dHSqDYvRMF">P0</span></td>
+      <td data-page-node-id="1OoT4dqDGaLLocMBQPgRNx">经销商档案/准入/评估/授权(PL)、渠道履约、供货申请、DMS 订单</td></tr>
+    <tr data-page-node-id="BOOOuCfGRGAILSmbFAniUI"><td data-page-node-id="Nrxklc4XD8qEV1aVJdyLUm">opp + salesboard 商机与销售看板</td><td data-page-node-id="VUlc4G9eyBE3jTqK7sBD8O"><span class="tag t-p0" data-page-node-id="RKhL9gvgLjCA7vTJNt7v6m">P0</span></td>
+      <td data-page-node-id="sy3xBejhehBtC0Cn69z8YB">商机/跟进/阶段漏斗、销售目标、销售看板 12 月趋势、客户拜访与投诉</td></tr>
+
+    <tr data-page-node-id="PMK1DyriULpNEPT5ycyYT0"><td rowspan="6" data-page-node-id="Cj3my3iM9yt05tKbQoR80F"><b data-page-node-id="nN3MwvsrDH5RpbKDYmFcJQ">第 2 批</b><br data-page-node-id="xEplsvYW3x1KXQHT0HtzMd"><span class="tag t-p1" data-page-node-id="vOXm3k2D6e997DlnVlBTRF">经营管理</span></td>
+      <td data-page-node-id="9CG0sHBO8BB4SI7x9n7CvA">bizflow 业财一体化</td><td data-page-node-id="PPvaMRgWcvRCzeLD81yQct"><span class="tag t-p1" data-page-node-id="3hYRDmYd0JDA1ZKGL80j1E">P1</span></td>
+      <td data-page-node-id="CVwsdH23jY8ohFKMnyNwwX">仓库库存/出入库/库存调整、自动凭证、单据流、固定资产与折旧、进销项发票（invoicing，第55轮）</td></tr>
+    <tr data-page-node-id="bMCnHAyLMEmclO0MMEpKc5"><td data-page-node-id="hselQfj5YlDCnvZ6y39VHj">payroll + finpay 薪酬</td><td data-page-node-id="vwDzdASzSPyOCbnoqJoZXE"><span class="tag t-p1" data-page-node-id="CxCnpb0XaCIaVCHPcNuVif">P1</span></td>
+      <td data-page-node-id="eVmXpa5d0utzjWXZFuxKBk">薪酬档案/方案/核算/明细、销售业绩挂钩、财务部薪酬考核（部门专属）</td></tr>
+    <tr data-page-node-id="EiLWbtmCQawknhv51PGHLr"><td data-page-node-id="Ay3wvCe7Yy4IGz0eAmDC6i">kpi 绩效管理</td><td data-page-node-id="EiI7PVzYmUUOvOFjkrdco5"><span class="tag t-p1" data-page-node-id="CExtJLKrs6WnVbCDKiLTtY">P1</span></td>
+      <td data-page-node-id="tmIzYXLgOn1XIf0VmFz25F">KPI 记录/考评、管理层生成与调分、否决</td></tr>
+    <tr data-page-node-id="7O774ZMgFuui8ctToJNYxD"><td data-page-node-id="QPi5ltSmG51PXaDyzljQTS">qual 资质合规</td><td data-page-node-id="zyAacsbilc9iN8vuaqzaLd"><span class="tag t-p1" data-page-node-id="0mdcR1DrikyE9C6WTAN85D">P1</span></td>
+      <td data-page-node-id="LAJDUf3ff5skhHsLSAI1CR">资质证照登记/校验/续期提醒、合规 KPI</td></tr>
+    <tr data-page-node-id="bg37S8u2J1Iam834IHx3Gq"><td data-page-node-id="bfnl9c2SA7pLdvLjA0UTNV">archive 资料档案</td><td data-page-node-id="wYzNS7m8XcHgPTa56q7F00"><span class="tag t-p1" data-page-node-id="lBuMy10sZ6cf6PhB2jw8Ir">P1</span></td>
+      <td data-page-node-id="kdpD8v3pzRa0rpd5HwVcul">厂家档案/渠道档案、五类资料统一查看、归档待办</td></tr>
+    <tr data-page-node-id="kcS4qryZfNbiKc9eCfeNmB"><td data-page-node-id="McbyBDfF6GTxUsc71GGl6L">doc + doclib 制度与知识库</td><td data-page-node-id="gUX0BR5RMA1lafrIZhXAQB"><span class="tag t-p1" data-page-node-id="Wmf6NkZL5i9xJePcXWBHNy">P1</span></td>
+      <td data-page-node-id="0nwPX1Zo6GxlfoJb1NmKgx">制度中心、知识库 29 篇（<code data-page-node-id="Vqex9BZ5kBn7PVpzEDXHOB">kb_seed.js</code>）、<b data-page-node-id="inoRg2Pvq6rOBsoWkaN1Qt">公文模板库 30 种</b>（第71轮 <code data-page-node-id="wBBPN8jqSAkXHrIcZqxWgs">official_tpl</code>）、套用生成</td></tr>
+
+    <tr data-page-node-id="JJfwhigVgvwsqhEXflOz5a"><td rowspan="6" data-page-node-id="3VG6YjzyEHgpMAcfNDF5OZ"><b data-page-node-id="8WqnU93g5kTLP1yEkTHWfv">第 3 批</b><br data-page-node-id="vVcHe9ITBLzitroAWYhVRz"><span class="tag t-p2" data-page-node-id="h6WXl8uVHRMKIZA0St8SnG">协同与支撑</span></td>
+      <td data-page-node-id="WPmoZFoL1txKIYBrtsNBNn">collab 协同办公</td><td data-page-node-id="XsXTE1usxRq9xTpVCfkGOH"><span class="tag t-p2" data-page-node-id="QFHmuZDmgD4W8WU1zabWxa">P2</span></td>
+      <td data-page-node-id="aB57v7Qt5caDlBF89fK3RZ">会议室/预订/会议纪要、日程、任务、个人待办 <code data-page-node-id="BPl7ZBz9rJfMGrSV81ksGh">user_todos</code>（第30轮）</td></tr>
+    <tr data-page-node-id="1xDY2FraxibhvzkVLubjqS"><td data-page-node-id="oreGFBzEffmi5SF2Hgrid5">msg 消息中心</td><td data-page-node-id="3AhpD1QFa0nvEObSLBDwWe"><span class="tag t-p2" data-page-node-id="JMKVVRt90r3xcOEA7aJsJQ">P2</span></td>
+      <td data-page-node-id="Y75Nv0vkEwoP7AmSnMHfJl">统一消息表 <code data-page-node-id="ICf6E7GBoXG2VskFgBHj8Q">messages</code>（biz_type/biz_id）、未读角标、待办角标</td></tr>
+    <tr data-page-node-id="GjMuR9ExV30hBRgnsSxKEm"><td data-page-node-id="4Vqej5FP4CuXpIyyoUpx2b">audit 审计日志</td><td data-page-node-id="7MSEvbvfuqcjnTBtClxoXo"><span class="tag t-p2" data-page-node-id="YbAsOu1PPaKhXStOWfE6Aa">P2</span></td>
+      <td data-page-node-id="gGPApDRpiL0GS3op3zkJMZ">审计查询（ADM/GM/VP/IT）、JSONL+SHA256 归档（第59轮）</td></tr>
+    <tr data-page-node-id="echyHbje0xt6E6cj4lj9AY"><td data-page-node-id="Wp4LgdqDFj5M7OE4QdWo4r">search 全局搜索</td><td data-page-node-id="LSxb3IwxWb6THjsqCe7QAF"><span class="tag t-p2" data-page-node-id="IxyhnNkPJTDxmmH4ziDheA">P2</span></td>
+      <td data-page-node-id="tfNYXip3S43W1ADRcC7lnf">跨模块统一搜索 + 权限隔离（第39轮）</td></tr>
+    <tr data-page-node-id="LJEZVCzbXzMyQkqWJ5cPBr"><td data-page-node-id="OxkmTzMG5ZpnhAIx89JHiB">training / market / service 培训·市场·售后</td><td data-page-node-id="hbyUfQcYTTMFyGvHT2rF9A"><span class="tag t-p2" data-page-node-id="4P0MmubQa53wz9t5qr6Ui6">P2</span></td>
+      <td data-page-node-id="727F0PG5MLeidC7PtUYJZ3">培训计划/结果附件、市场活动/费用、售后工单</td></tr>
+    <tr data-page-node-id="rncE9vgLEFARxe6501jOYt"><td data-page-node-id="urzq6gHxR2E2mOXQelSKVV">seal / directory / qywx / coord / orgchange</td><td data-page-node-id="gpXUXTZkeHIhgTUiw9sbsU"><span class="tag t-p2" data-page-node-id="mEL0h6quew90KXSE7wwEJV">P2</span></td>
+      <td data-page-node-id="mdOD5SMiFjuqx9sS8to6FX">印章全生命周期、内部通讯录、企业微信（OAuth2/绑定/推送）、业务协调中心（第70轮）、组织变更审批（#109）</td></tr>
+  </tbody>
+</table>
+
+<h2 data-page-node-id="GG6XeOlQU7dJxBBsY6UpJP">四、无需迁移 / 当前项目更强</h2>
+<div class="two" data-page-node-id="AeoEPSUuaczCUlFC4LRByF">
+  <div class="card" data-page-node-id="gjrYpevWNJokQ95xsZTbOs">
+    <div style="font-weight:600;margin-bottom:8px" data-page-node-id="DPdnRCK1OwV09cN0N7oZ6c">当前项目领先的部分（应保留，勿被覆盖）</div>
+    <ul data-page-node-id="FqdCbQNGGpGG2M65kxX6HK">
+      <li data-page-node-id="QgPnz38CudFBoVOdlZ0yb0"><b data-page-node-id="ooAUFH7nCEKZgsIgfhcpVh">合同管理</b>：8 个子页面（台账/借阅/变更/终止/到期/模板/权限/日志），比参考项目更细</li>
+      <li data-page-node-id="w67tB7txEakpqZpw1xhXKF"><b data-page-node-id="uigT50UPYQfP4ej8G9onSd">财务管理</b>：9 个 Tab（总览/预算/费用/借款/发票/收付/凭证/配置/台账）</li>
+      <li data-page-node-id="6ghyQ4oYqXekeZpS3skfwn"><b data-page-node-id="AO5ERwjRMfc750vLPW9CZ5">前端工程化</b>：Vue3 组件化 + 真路由 + Pinia + 懒加载，优于 979KB 单文件 SPA</li>
+      <li data-page-node-id="6rQ7bbdPNZ43TuvouGsITk"><b data-page-node-id="zDKK7NPb82SUnERuVRdBnx">后端分层</b>：controller / service / middleware 分层，参考项目是扁平路由</li>
+    </ul>
+  </div>
+  <div class="card" data-page-node-id="hXH9RhkEWRPkdAeWWNbdx1">
+    <div style="font-weight:600;margin-bottom:8px" data-page-node-id="t6BF6QEEeFDUMAGUKUdntA">参考项目独有的工程资产（建议一并引入）</div>
+    <ul data-page-node-id="of9aa7GteEvxsii9oux15t">
+      <li data-page-node-id="4dWhxIBNtkr6pqIDIdElw4"><b data-page-node-id="T7Bc5SSvtSiMwcpUnkQSS1">四件套测试工具</b>：<code data-page-node-id="AKUp8kpXQMvCUsPHI4Vc5E">_full_api_scan</code> / <code data-page-node-id="vUlZ4wHunHn1RyzUqS2uzJ">_ui_sweep</code> / <code data-page-node-id="Okag2eEh82OkCyPnOjGPRA">_sec_check</code> / <code data-page-node-id="CKPdt6sZvV2GpBQvhQ68hR">_db_health</code></li>
+      <li data-page-node-id="YCgpX4G21kgADf965qG4vj"><b data-page-node-id="NEodCZogrNoXArGwpypA6C">安全加固</b>：<code data-page-node-id="3jpCvCPVsPvGMIq9fUOTHi">env.js</code> 强 JWT 密钥、<code data-page-node-id="HNnNaFCHFekGFovjEm9KX1">pwd_must_change</code> 首次强制改密、登录失败锁定</li>
+      <li data-page-node-id="V2s8V15CwW00g0vXerOb6l"><b data-page-node-id="AldjLYAMfnBIgh3RssPHQy">部署就绪</b>：<code data-page-node-id="77X3MiECVdTU5zOI8m5gSA">deploy_check.js</code>（端口/JWT/弱口令/备份新鲜度）、<code data-page-node-id="Zs1lPr2y5DO1yE4pBwr3iE">backup_db.js</code></li>
+      <li data-page-node-id="wQP4CYqF07qrlZeiYAFgcl"><b data-page-node-id="n3uYFB8Y1b8Z0zHAWGN7J7">压测</b>：<code data-page-node-id="IX6Jn0YXZlcCfBcS2rZYCv">_load_test.js</code> / <code data-page-node-id="1BhxqpnYuJCBsrRogWn3wf">_sustain_load.js</code>（多档并发）</li>
+    </ul>
+  </div>
+</div>
+
+<h2 data-page-node-id="nuX3EepZCf2wdArADMVK5G">五、迁移技术策略</h2>
+<table data-page-node-id="gJFzNLOP8sfBeLqA45VYJe">
+  <thead data-page-node-id="ZB4xbPxqwKFeYjQ1PCSMGP"><tr data-page-node-id="qij3RBypgbHJdi5LZjSjzC"><th style="width:130px" data-page-node-id="h4q2fmbWozuV3e1GCJ3K6h">层面</th><th data-page-node-id="JyfzuQo57Jr1YSmTxUwJHF">策略</th></tr></thead>
+  <tbody data-page-node-id="tSSHOp6BCAWKZeErhjcVn5">
+    <tr data-page-node-id="F2J38QtpprBEbCQhdxyqny"><td data-page-node-id="KsAmsCFzhxN22D2pmxUNKz"><b data-page-node-id="bXuitDRCetDDRXkXtuES2W">数据库</b></td><td data-page-node-id="w7uPHRUxqZZzyo4i87VxTS">新增迁移 <code data-page-node-id="ZyYs209GOS2bbEQjD8l5uB">009_ref_business.js</code>：以 <code data-page-node-id="ci74pmyJvRxdmDLKniHn97">CREATE TABLE IF NOT EXISTS</code> 补齐参考项目缺失表（<code data-page-node-id="MSBsqsRvqPHsGvGFU48LkA">opportunities</code>/<code data-page-node-id="JkRg17qZGRP49M6ABJI6Ht">bids</code>/<code data-page-node-id="vp9PCmc2RLQYP9vnwkO24R">distributors</code>/<code data-page-node-id="CccunHT0VlTCOx5JNcdxDY">payroll_*</code>/<code data-page-node-id="v5704jJnfFB47qaoZAXntF">official_tpl</code>…），<b data-page-node-id="DJrPQlyampYlppvPgG0JQ5">不改动现有表</b>；两套管表并存，新模块用新表</td></tr>
+    <tr data-page-node-id="G45bX6AYg1rk69toAB6a8r"><td data-page-node-id="HUmucH3OAgJKfOEFIzr7Ca"><b data-page-node-id="8MmZvqxWEsw7Qi5GWcEVZm">后端</b></td><td data-page-node-id="ocvy8cNXrsqcc24OBBbGKh">沿用当前分层：新模块建 <code data-page-node-id="FjdRZfsjVjU35rEglsP8Hd">src/routes/&lt;mod&gt;.routes.js</code> + <code data-page-node-id="yXz2UKKA1Or4MEnrHVroGI">src/controllers/&lt;mod&gt;.controller.js</code>，挂载进 <code data-page-node-id="dDxKAVhvZnEJPUDUp18B7c">src/routes/index.js</code>；复用 <code data-page-node-id="MnWsv9qtt0o66wHpMYEAiG">middleware/auth</code>、<code data-page-node-id="pK6gECJuerjF0CIisCC8JF">utils/response</code>、<code data-page-node-id="9L3vJmk9j5hzIFNDhOL30M">utils/audit</code></td></tr>
+    <tr data-page-node-id="SIGgsCl6guvp8fDTGVAdDs"><td data-page-node-id="508DyARWx9JYaIrY8QGdJl"><b data-page-node-id="BkyC7HyXdqHbwHEEDCS1E8">审批</b></td><td data-page-node-id="VWSWv8h1w1ELPS4cfDxASL">把参考项目 <code data-page-node-id="ki3bq2KQZMtL5ugrjCRjlL">buildApprovalChain</code> + <code data-page-node-id="plGsBEPeUynQDutcvucFxj">TYPES</code> + <code data-page-node-id="2Fat4O67cmLq60zBevWskx">onApprovalPassed</code> 抽成 <code data-page-node-id="qfuYT74R5Ip31ReQqARyhX">src/services/approval.service.js</code>（当前已有该文件的雏形），统一审批出口 <code data-page-node-id="3TTnf1nFW16kgEOGloi8CC">PUT /approvals/:id/act</code></td></tr>
+    <tr data-page-node-id="lZZX2GOviEdQjEfyt2yzH4"><td data-page-node-id="ysC88plSTTzVKhdlBvmgkV"><b data-page-node-id="HE0zdAERjGFv6O9WDrguh7">前端</b></td><td data-page-node-id="e25Guhjhnsq9a1FaigvNH1">参考项目页面布局（统计卡 + 筛选栏 + 表格 + 弹窗表单）已固化为当前项目的页面范式；新页面照此范式写 Vue SFC，在 <code data-page-node-id="WolSTmAwSabc6GvY2lPcxX">config/modules.js</code> 加一行即出现在菜单</td></tr>
+    <tr data-page-node-id="A4zz9aAzg5v12aGgDsNGnW"><td data-page-node-id="R1xPJhCsUveuwMtQ4SzBqC"><b data-page-node-id="eOjWGVVDB5kQ1mwGaeiBgz">权限</b></td><td data-page-node-id="by0GNTiUVIzd0WPlqMmPhm">参考项目 <code data-page-node-id="vupDBycyigBSv9PyktuzTW">getEmpPerms</code> + <code data-page-node-id="1Xw6nz7lWdGgtQlTZAAeBQ">MODULE_NAME/MENU_GROUP/MENU_ORDER</code> 三件套需移植，补齐模块级 [查看,编辑,审批] 三维权限与菜单分组下发</td></tr>
+  </tbody>
+</table>
+
+<div class="note" style="background:#ecfdf5;border-color:#a7f3d0" data-page-node-id="qhBODTLL4YUKhagQnpuAN4">
+<b style="color:#065f46" data-page-node-id="7eNgKkR0NhCcLZYl1Jzqrv">✅ 迁移已执行（2026-09-08）</b><br data-page-node-id="3t5zMMKy7X8yl4VCQM3L3h">
+<span style="color:#065f46" data-page-node-id="vLuSnqJldFLpRODkWbAo2S">
+下列 26 个模块已按本报告规划完成迁移并通过验证：新增后端 controller / routes 各 26 个、前端 Vue 页面 26 个、
+数据库迁移 <code data-page-node-id="ExpEEuFvUMVjnc4ZuyM4v0">009_ref_schema_full.js</code>（补建 120 张参考项目业务表，与现有 134 张并存）。<br data-page-node-id="5qFcYDfruwmcvXR7nD0GMy">
+验证结果：后端新端点探针全部 200（无 5xx）；前端 2409 个模块编译通过；
+前后端 API 路径交叉校验 26 个模块 <b data-page-node-id="ceCurSFVBcjMw8eDkGckKV">0 处不匹配</b>。
+</span>
+</div>
+
+<div class="note" style="margin-top:24px" data-page-node-id="xAjxrFFL6cGtWhNBucdAT7">
+<b data-page-node-id="MDjCIXxX0sN8GflFptxvPw">下一步：</b>建议按批次确认后执行。第 1 批（审批中心 + 组织人事 + 招投标 + 经销商 + 商机）是业务闭环的最小完备集，
+完成后系统才具备「商机 → 投标 → 合同 → 履约 → 回款」的完整链路。
+</div>
+
+</div>
+<script>
+const DATA=[
+ ["组织管理","org","组织架构","part",45,"/department（部门 CRUD）","无组织树、编制数、负责人、区域/分支；无 org_units 体系"],
+ ["组织管理","dept","部门设置","part",50,"/department","缺职责 func、编制 headcount、状态、在编人数统计"],
+ ["组织管理","hr","人事管理","part",40,"/hr + ref/hr（312 行）","缺入职建档→转正→调岗→离职全链路、招聘三件套、离职交接、人事合同库"],
+ ["组织管理","directory","内部通讯录","miss",0,"—","第64轮新增：全员只读 /api/hr/directory（9 字段），ADM/HR2 可编辑"],
+ ["业务管理","customer","客户管理","ok",80,"/trade-customer + /customers","缺客户拜访 customer_visits、投诉 complaints、联系人 contacts"],
+ ["业务管理","opp","商机管理","miss",0,"—","商机 + 跟进 + 阶段漏斗（opportunities/opp_follows），CRM 核心"],
+ ["业务管理","salesboard","销售看板","part",35,"/statistics","缺销售目标 sales_targets、12 月趋势 trends12、区域排行"],
+ ["业务管理","kpi","绩效管理","miss",0,"—","kpi_records，管理层生成/调分/否决（第48轮 #229）"],
+ ["业务管理","dms","经销商管理","miss",0,"—","经销商档案/准入/评估/授权产品线 PL（distributors 等 5 表）"],
+ ["业务管理","market","市场管理","miss",0,"—","市场活动 market_activities + 市场费用 market_fees"],
+ ["业务管理","bid","招投标管理","miss",0,"—","bids/bid_docs/bid_files/bid_reviews/bid_view_grants 5 表"],
+ ["业务管理","bidgen","标书制作（bid 子）","miss",0,"—","章节/知识库50条/模板45章/Word 导入导出/招标导入（901 行）"],
+ ["业务管理","contract","合同管理","ok",85,"/contract + 8 子页 + ref 5 流","✅ 当前最强；可反哺参考项目"],
+ ["业务管理","archive","资料档案","part",30,"/trade-archive（合作方档案）","缺厂家/渠道档案、五类资料统一查看 archive_files/pending"],
+ ["财务绩效","finance","回款管理","ok",75,"/finance（9 Tab）","缺应收账龄、回款核销联动"],
+ ["财务绩效","payout","支出管理","part",55,"/finance → 付款 Tab","缺独立凭证上传、报销/采购附件自动抓取（finance_payouts）"],
+ ["财务绩效","budget","预算管理","part",50,"/finance → 预算 Tab","缺预算执行 budget_executions、年度编制流程"],
+ ["财务绩效","ops","经营驾驶舱","part",45,"/cockpit","缺 KPI 漏斗、目标达成、客户价值分层（第40轮 #128）"],
+ ["财务绩效","payroll","薪酬管理","miss",0,"—","payroll_records/items/scheme、salary_profiles，销售业绩挂钩（第43轮）"],
+ ["财务绩效","finpay","薪酬考核","miss",0,"—","财务部专属薪酬考核体系（第46轮 #222，370 行）"],
+ ["财务绩效","bizflow","业财一体化","miss",0,"—","warehouse_stock/stock_movements/voucher_entries/fixed_dep_records（第43轮）"],
+ ["审批协同","approval","审批中心","part",20,"ref/approvals（191 行）","🔴 差距最大：2554 行。49 类审批链、自定义流程、变更闸门、流程图、催办/转办/加签"],
+ ["审批协同","official","公文管理","part",50,"/documents","缺公文模板库 official_tpl（30 种）、套用生成、签发流转"],
+ ["审批协同","seal","印章管理","miss",0,"—","seals/seal_applications/用印归还/证章借用"],
+ ["审批协同","collab","协同办公","miss",0,"—","会议室/预订/纪要、日程 schedules、任务 tasks、委托 delegations"],
+ ["日常办公","daily","日常办公","part",55,"/checkin /reports /att-archive","缺日志（日报/周报）完整态、加班 overtime_reqs、补卡 cardfix_reqs"],
+ ["日常办公","notice","公告中心","ok",75,"/announcement","缺已读回执 announcement_reads、定向发布"],
+ ["日常办公","msg","消息中心","part",35,"/notification","缺统一 messages 表（biz_type/biz_id）、双角标（未读/待办）"],
+ ["日常办公","doc","制度中心","miss",0,"—","制度文件发布/查阅/版本（sys_docs）"],
+ ["日常办公","doclib","知识库","miss",0,"—","kb_seed.js 29 篇、分类/检索/权限"],
+ ["日常办公","training","员工培训","miss",0,"—","培训计划/报名/结果附件，四归口部门 + VP 终审（第22轮）"],
+ ["运营支撑","service","售后服务","miss",0,"—","售后工单/派工/回访"],
+ ["运营支撑","supply","渠道履约","miss",0,"—","供货申请 supply_applications/items、履约跟踪"],
+ ["运营支撑","procurement","采购管理","part",60,"/trade-purchase + /purchases","缺采购申请/订单/收货/退货/发票五单联动（purchase_* 5 表）"],
+ ["运营支撑","audit","审计日志","miss",0,"—","审计查询（ADM/GM/VP/IT）+ JSONL/SHA256 归档（第59轮）"],
+ ["运营支撑","qual","资质合规","miss",0,"—","qualifications/qual_verify/qual_renewal_pending、合规 KPI"],
+ ["运营支撑","coord","业务协调","miss",0,"—","跨模块断点检测 + 一键联动 + 联动留痕（第70轮，399 行）"]
+];
+const LABEL={ok:'基本具备',part:'部分覆盖',miss:'完全缺失'};
+const CLS={ok:'t-ok',part:'t-part',miss:'t-miss'};
+const COLOR={ok:'var(--ok)',part:'var(--warn)',miss:'var(--bad)'};
+const tb=document.getElementById('tb');
+function render(f){
+  tb.innerHTML=DATA.filter(r=>f==='all'||r[3]===f).map(r=>{
+    const [grp,key,name,st,pct,cur,gap]=r;
+    return `<tr><td class="grp">${grp}</td><td><code>${key}</code></td><td>${name}</td>
+      <td><span class="tag ${CLS[st]}">${LABEL[st]}</span></td>
+      <td><div class="bar"><i style="width:${pct}%;background:${COLOR[st]}"></i></div><span style="font-size:11px;color:var(--tx2)">${pct}%</span></td>
+      <td>${cur}</td><td>${gap}</td></tr>`;
+  }).join('');
+}
+render('all');
+document.querySelectorAll('.filters button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.filters button').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');render(b.dataset.f);
+});
+</script>
+</body>
+</html>

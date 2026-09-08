@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="xLgSdaI2nB6o4NBpHh19B7">
+<head data-page-node-id="YTZzdauCTzrRmOaC2c9dBm">
+<meta charset="UTF-8" data-page-node-id="q3FF6tQGnDCTKUzcqGkZL9">
+<title>功能迁移审计报告 · 2026-09-08</title>
+<style>
+:root{--bg:#fff;--ink:#1f2328;--mute:#656d76;--bd:#d0d7de;--card:#f6f8fa;--accent:#0969da;--ok:#1a7f37;--warn:#9a6700;--err:#cf222e;}
+*{box-sizing:border-box;}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC",sans-serif;background:var(--bg);color:var(--ink);margin:0;padding:40px 20px;line-height:1.6;}
+.wrap{max-width:1180px;margin:0 auto;}
+h1{font-size:30px;border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:8px;}
+h2{font-size:22px;margin-top:48px;border-left:4px solid var(--accent);padding-left:12px;}
+h3{font-size:17px;margin-top:28px;color:var(--ink);}
+.meta{color:var(--mute);font-size:14px;margin-bottom:24px;}
+.lead{background:linear-gradient(180deg,#fff8c5 0%,#fff 100%);border:1px solid #d4a72c;border-radius:8px;padding:18px 22px;margin:20px 0;}
+.lead b{color:var(--warn);}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:24px 0;}
+.kpi{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:14px;}
+.kpi .n{font-size:30px;font-weight:600;line-height:1;}
+.kpi .l{font-size:13px;color:var(--mute);margin-top:6px;}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13.5px;}
+th,td{border:1px solid var(--bd);padding:8px 10px;text-align:left;vertical-align:top;}
+th{background:var(--card);font-weight:600;}
+tr:nth-child(even) td{background:#fafbfc;}
+.tag{display:inline-block;padding:2px 8px;border-radius:12px;font-size:12px;font-weight:500;}
+.ok{background:#dafbe1;color:var(--ok);}
+.warn{background:#fff8c5;color:var(--warn);}
+.err{background:#ffebe9;color:var(--err);}
+.part{background:#ddf4ff;color:var(--accent);}
+.mute{color:var(--mute);}
+code{background:#f6f8fa;padding:2px 6px;border-radius:4px;font-size:12.5px;font-family:ui-monospace,Menlo,monospace;}
+.box{border:1px solid var(--bd);border-radius:8px;padding:14px 18px;margin:12px 0;background:var(--card);}
+.box b{display:block;margin-bottom:6px;}
+ul{margin:6px 0 6px 20px;padding:0;}
+li{margin:3px 0;}
+.bar{height:8px;background:#eaeef2;border-radius:4px;overflow:hidden;margin-top:4px;}
+.bar > i{display:block;height:100%;background:linear-gradient(90deg,#1a7f37,#2da44e);}
+.bar.warn > i{background:linear-gradient(90deg,#9a6700,#bf8700);}
+.bar.err > i{background:linear-gradient(90deg,#cf222e,#e55353);}
+hr{border:none;border-top:1px dashed var(--bd);margin:32px 0;}
+.legend{float:right;font-size:12px;color:var(--mute);}
+.legend span{margin-left:12px;}
+</style>
+</head>
+<body data-page-node-id="bkV3Hou9XVb6O4P76ZpF95">
+<div class="wrap" data-page-node-id="m1k5Blc3HZEWkDWlZqXZdA">
+
+<h1 data-page-node-id="bFAaVHQMDt2W1FQowkWUQA">功能迁移审计报告</h1>
+<div class="meta" data-page-node-id="0y1witkAys3XfIwGaVk2gA">审计时间：2026-09-08 · 范围：参考项目 539 端点 / 36 模块 / 131 表 vs 当前项目 700+ 端点 / 59 路由模块 / 254 表 · 方法：端点扫描 + 人工抽样 + 业务规则核对</div>
+<div class="legend" data-page-node-id="DAcdtVEH3Tpx30qlHYzgtQ">
+<span data-page-node-id="Lq7GkhgHUf592kNxAv8BXI"><span class="tag ok" data-page-node-id="gOyB964Sudha8azKB5bDJv">✅</span> 已迁移</span>
+<span data-page-node-id="nD7jDTtYlADdrEjkrlgQiz"><span class="tag part" data-page-node-id="nhFCKHe2xL19crQEjy7M7X">🟦</span> 部分</span>
+<span class="warn" data-page-node-id="yez0a7JE5E4AsGgFqHaWRW"><span class="tag warn" data-page-node-id="0tsDHv3EyptILDTOdWEsnD">⚠️</span> 大缺口</span>
+<span data-page-node-id="TZIH8uQ3jN5J1Nk09VTIDQ"><span class="tag err" data-page-node-id="ogVYFaPbBkJhBQ9YVjUoc3">❌</span> 未迁移</span>
+</div>
+
+<div class="lead" data-page-node-id="aGlmPFqE5aRek9vJ5w8laQ">
+<b data-page-node-id="0ZGrKHNA6hTT403htDCWah">结论先说：迁移完成度约 65%——26 个新增模块业务逻辑真实落地，但还有 4 大缺口 + 1 个完全未建的审批中心 + 1 个全局评估偏弱的数据服务层。</b><br data-page-node-id="LwJxm7nbOpI4HU073wBO1l">
+本轮迁移不是「摆个空壳」：抽查的 4 个核心模块（bid / dealer / collab / invoicing）业务规则、状态机、冲突检测、红字冲销等都已实现。
+但参考项目的两个引擎级模块（<b data-page-node-id="F98ANiRSw2gXvlSanFgd3t">审批中心 49 端点 / 日常办公 74 端点</b>）当前项目完全没有对位。
+另外参考项目独有的 4 个模块（datasvc / budget / payout / freport）当前未建。
+</div>
+
+<div class="kpi-row" data-page-node-id="TyYClHoBELnCYTxetJuLRE">
+  <div class="kpi" data-page-node-id="iGUjPwElrlfo0gCS84gYEe"><div class="n" data-page-node-id="AyADCshME61Fs4krjyNCzr">539</div><div class="l" data-page-node-id="7vMSS06aakyn1HqBy4nS1H">参考端点总数</div></div>
+  <div class="kpi" data-page-node-id="G2v6WLbhoGEHbN3KSrX5kB"><div class="n" data-page-node-id="24MLw2oXzLgc1W2EozZzq5">~380</div><div class="l" data-page-node-id="3ZquV90HBgbVoEiZeoUD8u">已对位端点（70%）</div></div>
+  <div class="kpi" data-page-node-id="KzabZgIRScfWfb5dSD2F1d"><div class="n" data-page-node-id="Q410RrI8CBIp77VlF1Iuba">26</div><div class="l" data-page-node-id="Mh7iSLcXZBgiLeKrwdsyRN">本轮新增模块</div></div>
+  <div class="kpi" data-page-node-id="O7ju1zBIDBMTbN6O0UxRpE"><div class="n" data-page-node-id="90Ry4GdC2R2Pc4YecRSTqI">120</div><div class="l" data-page-node-id="hpb7Wfp219zqJucxVmk876">新增表（无破坏）</div></div>
+  <div class="kpi" data-page-node-id="0MpF5mcl0iUzE30ziblj2C"><div class="n" data-page-node-id="fQoogt8LsnvqY3dwO0d7IT">4</div><div class="l" data-page-node-id="WEk7PsI2Dkt10wt4u6pdow">大缺口 / 5 中缺口 / 12 小缺口</div></div>
+</div>
+
+<h2 data-page-node-id="JCJ1yFKsTOoV0WnwssFIJZ">一、已迁 26 模块 · 端点对位情况</h2>
+
+<table data-page-node-id="OHi0zsXkL9iYyVFhCEMAzY">
+<thead data-page-node-id="NX5hAzyenRkh3GMZvjYvKP">
+<tr data-page-node-id="WBb2q4IRIl3JB9OhTWOdux"><th data-page-node-id="jdPNmNaCasJmTZfdqYOb9b">当前模块</th><th data-page-node-id="AUnoihWZYgW7kpGL4D13D4">对应参考</th><th data-page-node-id="a9SqwxTKLbnIcNpvFHKfu1">当前端点</th><th data-page-node-id="ZctGrbzjPE5bxvg6X4y57P">参考端点</th><th data-page-node-id="7sQh7Q3T2XUL5aYzuG1W5U">对位率</th><th data-page-node-id="u1IeLi21YIbajfoPWm7pNH">核心抽查</th><th data-page-node-id="63f9gfCgu1G5GB8dRTWVyv">备注</th></tr>
+</thead>
+<tbody data-page-node-id="78RmNpqE9ngaH1XycZhQVg">
+<tr data-page-node-id="1bwQFSYcyIxRfzPhwWYb1h"><td data-page-node-id="ifyzEDSa6iAQiQ9x9myWL4"><b data-page-node-id="Ms4a1J7sGIYTl3JaAiP07h">商机 Opportunity</b></td><td data-page-node-id="TauGp7rOprRTqMmkMc44td">crm/opps</td><td data-page-node-id="AziDsOLLOuPmtuuRWeO5zH">10</td><td data-page-node-id="n5cEXkuz0HZvXcyqwl7xdP">26</td><td data-page-node-id="jj1Ag7VsLWhuLd1wS0wV3I">~90%</td><td data-page-node-id="AOCOSYiCzFMlUDxpKm6fK4">阶段严格推进、赢率换算 ✓</td><td data-page-node-id="blAVutOWcXtlMKIRHzNpCw">参考 opps/contracts 已迁到 contract+opportunity 联动</td></tr>
+<tr data-page-node-id="Epk66L8MKtlk0BunXZDgsH"><td data-page-node-id="LmyDB5B2qXxhCt5xkfring"><b data-page-node-id="ijefbFwbWF8qv6MBDF4dXA">经销商 Dealer</b></td><td data-page-node-id="GD7kalge6k473kJ2yj5jOT">dms</td><td data-page-node-id="JxK73mn7BDomvsAZaKjGNA">17</td><td data-page-node-id="EsqPpRqSWQwqcZII8gBxUB">16</td><td data-page-node-id="owJFDoExIWVysOzv0xuZPK">~100%</td><td data-page-node-id="j5aKCIgQsu7QWnk5RKOrGM">五项准入评审 / 状态机 ✓</td><td data-page-node-id="6dccYRoD7dNN96TXEL603P">含周期考核 + 产品线授权</td></tr>
+<tr data-page-node-id="IL54LmXxgxbGPVnTrUZAHU"><td data-page-node-id="j2wXky3ceLtQmsf7WejSwT"><b data-page-node-id="LsJYH8wLOTJH8xcV3UAupG">招投标 Bid</b></td><td data-page-node-id="JBXDD1VpefuiTh5fMHnBkv">bid + bidgen</td><td data-page-node-id="Ef2TYwkPNkio469TUEgI0C">40</td><td data-page-node-id="2jIVwwPrACz9Y8fcb9XjEA">42</td><td data-page-node-id="8cqr7i7lfz8WG3We1qzbsz">~95%</td><td data-page-node-id="2Z2VEbAJ5N5XrX7dycUnkJ">章节 / 知识库 / 评审 / 授权 ✓</td><td data-page-node-id="y8Jb2r5DTALsLAlQ4f7w1L">Word 导入导出跳过（需装 mammoth/docx）</td></tr>
+<tr data-page-node-id="5zkMgNpTFfgz6snsKJqWZm"><td data-page-node-id="truM0zciKb40bN6v2siTbg"><b data-page-node-id="Rm3FoLoP8nLZXWJ9HW9Zyw">渠道履约 Supply</b></td><td data-page-node-id="ne7aOlG0zVv8VAhO5Cc32T">dms/supply 段</td><td data-page-node-id="DYGKmrXags7fPm6g745TrS">~10</td><td data-page-node-id="PJ9HU4sx5sYDZXBgWufImx">~10</td><td data-page-node-id="ni2zfLeQBQNJ0Leq03K12V">~90%</td><td data-page-node-id="z7X0CTt6Yj7vBGEtWp8VMO">供货申请 + 明细 + 登记 ✓</td><td data-page-node-id="GzbAHUcL2IehELLyMIq9jk">含 DMS 订单</td></tr>
+<tr data-page-node-id="HiZIO445numpZJUmI3IBUa"><td data-page-node-id="NNesIAPjiD4udHFuAxEvrI"><b data-page-node-id="4y5KXTC4gpKpNQ49nvUFw2">薪酬 Payroll</b></td><td data-page-node-id="GANHWlUTdWJdHWvqjkTsNP">payroll + finpay</td><td data-page-node-id="I955tDIbYwhHIG8gGd9paH">27</td><td data-page-node-id="5NImDUy9CxapHLS1piozP5">31</td><td data-page-node-id="tAAo45jCzkuvLV2HYG1Ahq">~85%</td><td data-page-node-id="v9HkyX50abcHDuzFOaJqSh">档案/方案/核算/发布/财务考核 ✓</td><td data-page-node-id="1v8xjX7GRlz0sIPgIVbEsS">合并了 finpay 的财务部考核</td></tr>
+<tr data-page-node-id="OHuzf5HEuUUrFpVqlHp71M"><td data-page-node-id="LA9XyDjVtWps7LHh6Xfet9"><b data-page-node-id="70DePCcK8doMGEOaJbDzwT">绩效 Kpi</b></td><td data-page-node-id="jmsEaKXEZg7S0s0AuDRQbH">performance</td><td data-page-node-id="iH1lmAFimfXuJBFH0Dv74I">~6</td><td data-page-node-id="nzhh2uBgOQ54hR9qw4qbd9">4</td><td data-page-node-id="a9kMQD9amHVIB3tTgpkxwx">~80%</td><td data-page-node-id="NxBfAb4o6OxvHgmzTbl2BJ">管理层生成/调分/否决 ✓</td><td data-page-node-id="aXPWVaDKAVndUqc5SEYwlD">扩充了员工评估维度</td></tr>
+<tr data-page-node-id="qUHZYBqv4cKMQCtih5fsf8"><td data-page-node-id="qkloO5wcP9r3D6fytDsBXz"><b data-page-node-id="pXBFyV4v9FBB4TYE3WbfdC">资质合规 Qual</b></td><td data-page-node-id="SGcbU38nYCc2IRh5wTOSgo">qual</td><td data-page-node-id="4BmdExdvYHNuHEzFRpFNIg">16</td><td data-page-node-id="H8E8bRRU1mMQrCbiBV4TzW">15</td><td data-page-node-id="8u4djB8RNL1C44bqx36zRP">~100%</td><td data-page-node-id="QR76WrXinVwln2SL9HdhOs">到期预警 + 续证 ✓</td><td data-page-node-id="uJG548LSQ8WLoEQhSRiety">完成度高</td></tr>
+<tr data-page-node-id="NXQ9XuMPoh1M3uuOWBvB9F"><td data-page-node-id="BifItqFcUoowGnsVlgvDAb"><b data-page-node-id="kkSz3F68LTAXpxTJGz7052">资料档案 Archive</b></td><td data-page-node-id="qZgaDdXdSvOacCVdVBhlLm">archive</td><td data-page-node-id="lQsHDRpY3msv6oeJ6jHo19">19</td><td data-page-node-id="8T1vzO1AXGEMiGAI7Lg5tV">17</td><td data-page-node-id="E690iGWdwRSeopX11nEsiR">~95%</td><td data-page-node-id="6wPHMUxxBV0xYcHutJ753e">厂家/渠道/文件/借阅 ✓</td><td data-page-node-id="RA3JfUIFpvlHfuv6mZH2o3">含待归档</td></tr>
+<tr data-page-node-id="WkfMpGGnfAk6zE4AGoEKOI"><td data-page-node-id="EREV12mfG4pNzotzH7OMWi"><b data-page-node-id="JiH6bhe4ijoy3AjKw6JDye">员工培训 Training</b></td><td data-page-node-id="CNQuuWdZKons4HiHAvQk7a">training</td><td data-page-node-id="qEfm5PGCkzBngkOL6pzYEU">~6</td><td data-page-node-id="nUWcV5rpotdABwAzOmiaBV">6</td><td data-page-node-id="GXOGfJ37C7XfiJxG2xzQkk">~100%</td><td data-page-node-id="ZlV8D9H0cfah6SxkVDHEnD">计划 + 报名 + 归口部门 + VP 终审 ✓</td><td data-page-node-id="v5AezyXlgbkPH90Ug3iecN">完成度高</td></tr>
+<tr data-page-node-id="MzzQKrCaxQhHxXXCIuV0EG"><td data-page-node-id="zyWq39W5BKWwelkGccb8Kx"><b data-page-node-id="Q53HgdFqy0BFaiffSEul2b">市场活动 Market</b></td><td data-page-node-id="F4PYdHQJTWVq6kwO5T9EUG">market</td><td data-page-node-id="aMpKpw42a3U8G0ekqH9Cv7">6</td><td data-page-node-id="6KFp50CCObotk7xP8Cmu3d">6</td><td data-page-node-id="EN0OzEqfPbIgDlcOSanGWB">100%</td><td data-page-node-id="7iYfXqWbtR8vFDCgiu0ejz">活动 + 费用登记 ✓</td><td data-page-node-id="bLCs7UlX5vp7vajH20Dv16">完成度高</td></tr>
+<tr data-page-node-id="NfHo1qVOycaEQEPbgZCeGJ"><td data-page-node-id="FHfYyr5bt4ZWjQ8CSDO8Wo"><b data-page-node-id="mG7hY2uE0l9QeqtaIpD1Hs">售后服务 Aftersale</b></td><td data-page-node-id="9B6aPv2aSsYCWZSq48JMEB">crm/service + coord</td><td data-page-node-id="cXED8gtf41Jq4qjwIseK9K">14</td><td data-page-node-id="TUuOusYQURPNbrJoGIlbCQ">~10</td><td data-page-node-id="ctW1EdZABH5u0pjF6vIHu3">~100%</td><td data-page-node-id="1LB3HKGo9EjA0amyskDkZ7">投诉 / 拜访 / 服务任务 ✓</td><td data-page-node-id="IqCWh63Lkoh3OF5NdP7dBF">含客户回访</td></tr>
+<tr data-page-node-id="ytON0IAnK7zHZwIGikvjcE"><td data-page-node-id="UaDjiE10U80U98oXzBRCT4"><b data-page-node-id="XD3nnQDmG8vhu45Olbb3T7">业财一体 Bizflow</b></td><td data-page-node-id="jW3H6Nu7pMDaf3qEtUpwb7">accounting</td><td data-page-node-id="SDDaqyesKl2EKrqSZpvkK9">24</td><td data-page-node-id="N2r4uFZTLKMJwHTUDvXxRT">~30</td><td data-page-node-id="LqBe7l0NYWkHMLEoSgl8Ly">~90%</td><td data-page-node-id="ujnwfflWAUTDFblksIBAYz">库存事务 / 自动凭证 / 折旧 ✓</td><td data-page-node-id="mUivJ7S7m8fNxmpYxtMtBs">含补货预警</td></tr>
+<tr data-page-node-id="shhGirlLV23upnFgtMiEDs"><td data-page-node-id="AYS4OCCULGTTbUuWfyHJfA"><b data-page-node-id="nwg0A2hHjmQIUEeGNCAEqR">进销项发票 Invoicing</b></td><td data-page-node-id="D7EFimGWWP6iqWzcMHt4bv">invoicing</td><td data-page-node-id="AlJwlhEEUdWFsvT6tgiiw9">29</td><td data-page-node-id="shNP6TS6zfaEWCHe8Bfc7F">26</td><td data-page-node-id="HbwQKdUYWEZcPrfIK4EY4V">~100%</td><td data-page-node-id="wRP7pRbYvVBDO79P9iScYl">红字冲销 / 账龄 / 红退 ✓</td><td data-page-node-id="Pox1eDGyFTgpao31nthhb1">含红字发票与红退</td></tr>
+<tr data-page-node-id="lVSYPmcNx9ax0brMfEWDxu"><td data-page-node-id="GYYqHiB8Z5q4pi3x7xWy2P"><b data-page-node-id="5cCiTJPH9wXIpv5hE0dUUd">协同办公 Collab</b></td><td data-page-node-id="lhSQUo77ZL3HbM7B3uVj6Y">collab + todo + dms/seal</td><td data-page-node-id="t3MR5Bv1tdU7B1qWJas1tz">32</td><td data-page-node-id="OLFsBd1VaJFs6PEJAK3RPk">~30</td><td data-page-node-id="yXzRWtMOz2fpWofRuPlU7j">~95%</td><td data-page-node-id="zDVhFM6Ni8d6hcbSGgcFf4">会议室冲突检测 ✓ / 委托 / 补卡 / 加班 ✓</td><td data-page-node-id="kAiISEWkuv8qyATy5pLsNP">整合会议/日程/任务/待办/委托</td></tr>
+<tr data-page-node-id="WLadzWNhoEh0nwbAhAcmZ6"><td data-page-node-id="AOCHzwkRK1avhn5IwtWlhh"><b data-page-node-id="YZL6xYtJGHcDD74lT4yRHB">消息中心 Message</b></td><td data-page-node-id="N8cy3YOuJLxJd5zgCvRF5n">message</td><td data-page-node-id="boGCnUOjWmDXCFZSLwGl5D">~12</td><td data-page-node-id="5poZ9taEhiyPG66FioYD3b">12</td><td data-page-node-id="fFLLUFaJMaGvIAHPpM0ADo">~95%</td><td data-page-node-id="yNsV1Pl5MYt1GSlra1jGD4">已读 / 角标 / 按类型 ✓</td><td data-page-node-id="av1JNTOYBwiCfEsvavjb7y">含推送接口供其它模块调用</td></tr>
+<tr data-page-node-id="JZZLPNfkB1LwTzKJNiE9n4"><td data-page-node-id="uRILAeVQ2gptbQjQBBz82F"><b data-page-node-id="9IES44YYdGpcz1REBhqSCu">全局搜索 Search</b></td><td data-page-node-id="cVr0062MIWrpMCcOx06XFg">search</td><td data-page-node-id="6MTe9vanR0fRUqdMHBoY0R">~3</td><td data-page-node-id="3UmoD6uEg0lN63SqdkPrH0">1</td><td data-page-node-id="WdE66VrNcs4M1Z9JxTFbF9">~100%</td><td data-page-node-id="oT8ogzScoGdr0fqpyiF9ul">权限隔离 / 跨模块 ✓</td><td data-page-node-id="eeKnGxQ4iFxMGJV5PavcbW">含模块分组</td></tr>
+<tr data-page-node-id="YpXp77Vh7TaWDboqo5DuiT"><td data-page-node-id="hAHpU6pEwrholwbzcph9FL"><b data-page-node-id="t16cujfbAzAc6RAgx05n9s">审计 Audit</b></td><td data-page-node-id="mKsDHm9bG1ZI5MWBssPkVQ">audit</td><td data-page-node-id="el4F7nbo2dUqDXXa0hgCWf">~6</td><td data-page-node-id="ffVE8G2aVL4GR5go0iL5fk">9</td><td data-page-node-id="fcg7zHjpv8FFxbI5SSymex">~70%</td><td data-page-node-id="AUzrb76L8NTH9QlxSLRksC">角色白名单 / SHA256 归档 ✓</td><td data-page-node-id="JmJoPLtQtrhKka0fNtrQZb">缺 archive 的 preview/download</td></tr>
+<tr data-page-node-id="66AEXGRnNeruo0C9UPNq27"><td data-page-node-id="ANOQdSZUvEciPqkGG0Hl3u"><b data-page-node-id="BQeFtdMiKwth1RREAkurHF">业务协调 Coord</b></td><td data-page-node-id="eipz1ZTVixlJAzFqL8nDWO">coord</td><td data-page-node-id="1Mt4y05j25w09Rq5ETHYoE">~12</td><td data-page-node-id="7dNCdaW1BmIUQYNn2x0eoA">8</td><td data-page-node-id="o2XBqvtwXLS4VieGuD3Ijj">100%</td><td data-page-node-id="I4LPM2luK8Cy8K2w5gh7Qp">7 条断点规则 + 一键联动 ✓</td><td data-page-node-id="4Mxmv3r69B3kJjDCAakj6Q">扩充了断点数量</td></tr>
+<tr data-page-node-id="MlEqfQ1xwd7oOJDAbKY9FM"><td data-page-node-id="72oc7HXpQB5AKr1rPd2h5O"><b data-page-node-id="qM19zD1HUEeS6V9cPC7OKc">组织架构 Org</b></td><td data-page-node-id="lotChPcSH3MzIDj9hghzM3">auth/org 段</td><td data-page-node-id="cjgxyjWkxEJnlm9lZEcXiy">~15</td><td data-page-node-id="EVyuFJ6a9cwfXpA9qaXfSd">~10</td><td data-page-node-id="cwI5Dff33JYa1GLTyHL3Vq">~95%</td><td data-page-node-id="yF9aFjwscKd87cQfzgJaCr">组织树 / 部门设置 / 单位信息 ✓</td><td data-page-node-id="jG66GFbe6QW7PFfnxaGQcP">含变更历史</td></tr>
+<tr data-page-node-id="pIiX7HIWJGAZ48uCpfWCjV"><td data-page-node-id="fci8FL8xAU9mL58ijmMsmu"><b data-page-node-id="Fapr6kF1Epx5OtHceRgazr">人事业务 HrExt</b></td><td data-page-node-id="E1h4tQG8bL7L5YaG1bmoyC">hr</td><td data-page-node-id="pTIIeJCxkJ4bH0Fc80qn3U">36</td><td data-page-node-id="wsbylLu0nil4wlWD875E9E">33</td><td data-page-node-id="GFOIKtgTxfKGIN2CRMz3oX">~95%</td><td data-page-node-id="vAY42L13P1bfgCMYCGB1Bg">入职/转正/调岗/离职/招聘 ✓</td><td data-page-node-id="fxotFpAn4SZAhRfrr8DFy5">含人事合同</td></tr>
+<tr data-page-node-id="GMN8ow9atjFikVVEsrUxaa"><td data-page-node-id="ePYBS40JbRmOLyi0jRS5LQ"><b data-page-node-id="QOS5NqXR6tcuZ94ys2hMm6">组织变更 Orgchange</b></td><td data-page-node-id="UVMfoJoQxab6vsQWQP3kfE">orgchange</td><td data-page-node-id="sYKdri5nyK06LxQ0vTZyfu">~6</td><td data-page-node-id="sAVMSqnYOCpfOsfSRe4dFK">4</td><td data-page-node-id="AGYfS9aPg5B9otSG4OMvCk">~100%</td><td data-page-node-id="WmABE75yDLYsI0vAI6s6e3">副总→总经理两级审批 ✓</td><td data-page-node-id="83fCSftmCWrMrwhDBFWGwD">含变更预览</td></tr>
+<tr data-page-node-id="FNyz6HqWzWNZHd39WVx3Us"><td data-page-node-id="EIroJSzorC8lNoRrCcCxtW"><b data-page-node-id="nZlrCotpAzPF0YmZo6rOaz">经营驾驶舱 Ops</b></td><td data-page-node-id="44buVVhzMt14Tc0c8bX15H">ops</td><td data-page-node-id="OnWGdOTI3zXaCCGbXPEHCf">~8</td><td data-page-node-id="c2LUTQz8rgSHI5mBlfTPAF">7</td><td data-page-node-id="HtrZ5qyGkEgcCD6aUvM3RD">~95%</td><td data-page-node-id="Ofq2gC6wkZulbDWJrDZz8E">销售漏斗 / 目标达成 / 趋势 ✓</td><td data-page-node-id="NwOgKHF0JXTo74uo3rDrU8">含年/月度目标</td></tr>
+<tr data-page-node-id="SxLJHtr7HErG7DaRXU750D"><td data-page-node-id="Gqk98o4yb9FfFdMWKAHymt"><b data-page-node-id="DCcJORvBAIAjWfJNFAA9xg">企业微信 Qywx</b></td><td data-page-node-id="8XZAafY30AsuBj3NzCjYaS">qywx</td><td data-page-node-id="wk3u1ZX3J8aksJ5YgfzQGK">~8</td><td data-page-node-id="hTGasvCQhfBBktZfDM2vek">9</td><td data-page-node-id="YvHDQLYnqGTYxhUW8Gg28N">~85%</td><td data-page-node-id="D4akTTfk0JtTShzrjZtnSc">配置管理 / 绑定 / 推送留痕 ✓</td><td data-page-node-id="43TW1d5DoEr4icIrhx20wR">OAuth/回调缺（无网络凭据）</td></tr>
+<tr data-page-node-id="n3iEwvuUXPoagSzpsOuAcK"><td data-page-node-id="d7k1cqkbU7y4vE9kbOq6D9"><b data-page-node-id="4ZL4RjUdztQErWCg6A1h2T">知识库 Doclib</b></td><td data-page-node-id="9cB3yluwQwQ4C82MANYVgt">office/doc-items 段</td><td data-page-node-id="hh4XmGyGtEFET7W0Nkferb">~12</td><td data-page-node-id="wYfx4Fd6esWZvzrZfmHhu0">6</td><td data-page-node-id="BD1d7CXAvQVGbpZoKljQsz">~90%</td><td data-page-node-id="jO9E8hsHMF7SzYHLjNTleu">分类 / 检索 / 种子数据 ✓</td><td data-page-node-id="FumroJ604J8Wn54nB82Tcm">含 29 篇制度/知识种子</td></tr>
+<tr data-page-node-id="u0GnJBOZUcIHwYDXRPC7Cs"><td data-page-node-id="ElACAPy7xL3FZZ6YJ2kOkZ"><b data-page-node-id="FCWKbloq2yVCpwH7aD4vKu">公文模板 OfficialTpl</b></td><td data-page-node-id="u1w8htx70lwU8DIgF3UgZz">office/doc-templates 段</td><td data-page-node-id="oCVYp9uujUGzW85IqTIxzF">~6</td><td data-page-node-id="Wv28CsqinHiEBHVsHubVwl">8</td><td data-page-node-id="C3CjEgFlt6DXrPD7Z7huJB">~75%</td><td data-page-node-id="2KRemXn92CT1oFMLyRqtoR">30 种模板 / 套用生成 ✓</td><td data-page-node-id="KEcP3ej3ja4dBtVY26J7MS">含 15 法定 + 15 常用</td></tr>
+<tr data-page-node-id="Ko8pLDbmGnwnuoC6LhEcF5"><td data-page-node-id="zEahFNECrzTI7XHO2io9vQ"><b data-page-node-id="X640rSA9FGop8EKf04W8b7">印章 Seal</b></td><td data-page-node-id="pqdHcCDIzwbcLVrMsfiKhz">office/seal 段</td><td data-page-node-id="yPUpoGWB4WLUhMBZLbea8O">~10</td><td data-page-node-id="VEt1wFRn5nAJfGrmCdkRse">~6</td><td data-page-node-id="tchijgXlEN9pApWhIn1DLD">~100%</td><td data-page-node-id="GFSCOaic0s8dgmZKVuWQcX">登记 / 用印 / 借出归还 ✓</td><td data-page-node-id="5ZahFoTmeTG3K7F4lmBpTj">全生命周期</td></tr>
+<tr data-page-node-id="A4U7OpVXU0aL5Eg7sat3sV"><td data-page-node-id="6yQNZj0fLqL6gomzO1i237"><b data-page-node-id="GcCyqxDWvRInSl8iMHEEGo">通讯录 Directory</b></td><td data-page-node-id="YN9PfwDBSh2qE2LAPAYc1P">hr/directory 段</td><td data-page-node-id="HwZQbQ8WzpzyeKjLiJTTBF">~5</td><td data-page-node-id="ZMThF3VqJltma5cUphn22Q">3</td><td data-page-node-id="GYmM1SMAbbqfsrlCVV43XV">~100%</td><td data-page-node-id="27Mfa5xioFodw5dyJg240H">角色可编辑 / 检索 ✓</td><td data-page-node-id="7I4SoBExQ5bBw0YdmPJvXE">完成度高</td></tr>
+</tbody>
+</table>
+
+<p class="mute" style="text-align:center" data-page-node-id="x2oj3oIB9QEACg9lXgMZvd">⬆ 26 个已迁模块合计 401 端点，参考对位端点约 360，对位率 ~90%。抽查的 4 个核心模块（bid/dealer/collab/invoicing）业务规则真实落地，不是空壳。</p>
+
+<h2 data-page-node-id="SMCMnAUyR534ApNX28rxDG">二、🔴 大缺口 · 必须后续专项推进</h2>
+
+<h3 data-page-node-id="uIapeAAuZvsjAqDQfNlb8h">2.1 审批中心 · 参考 49 端点 / 2554 行引擎</h3>
+<div class="box" data-page-node-id="JvLFjRSOKKaNHkrGHUHVov">
+<b data-page-node-id="27r9SGz2Xh1MpqiVVMNoIA">当前现状：B 完全没有独立的通用审批引擎。</b><br data-page-node-id="KI4fsDwF0BAVfNsbM0NFKn">
+B 的各业务模块只有简单的 <code data-page-node-id="8vQw62KaFRR7ziZCJAvlOB">PUT /:id/approve</code> 单步接口（contract/leave/expense/trip/purchase/document/project/document 7 处）。这些是「审核通过」开关，不是「按流程流转」。
+</div>
+<table data-page-node-id="Cg2Pm52gNq0gnGd8lbHmCf">
+<thead data-page-node-id="G126Tc1TXIfD32K8sAkQVp"><tr data-page-node-id="9bnnygW5aDVUQjkoxni0CQ"><th data-page-node-id="YrFAX1RRmVID2mYdW0Hu3c">子能力</th><th data-page-node-id="eYynRd6AnzlO3gzkM5lXjq">参考实现</th><th data-page-node-id="nSIDjDsyTdHliicA1oO1YA">当前状态</th></tr></thead>
+<tbody data-page-node-id="IYPnQNhpniJIc4ckBrvXTo">
+<tr data-page-node-id="WLHoBiH65dTpcVB0FklwBb"><td data-page-node-id="ni7RYV6pVPxDwAsmCT90Rj">审批流配置（多级/条件分支/可视化流程图）</td><td data-page-node-id="BQdfk58RnDPpqGR60nMN1n"><code data-page-node-id="s6vf7ABFxD4AMhPboYW7OX">GET /approvals/flows</code>、<code data-page-node-id="DXxD4QMy7SFhopP60geSct">PUT /approvals/flows/:type</code>、<code data-page-node-id="x6W3lC4RYMQxkFOd7BJZm4">flow-charts</code></td><td class="err" data-page-node-id="iiz21q2AFjgICWXQzRQCrw">❌ 完全没有</td></tr>
+<tr data-page-node-id="f0QtalQpqAZqdPuXmSujsu"><td data-page-node-id="eIGYl3W2Qrikw6BGC2ocB8">发起 + 流程预览</td><td data-page-node-id="CfpG0t5i5oaft3LIOm0H0J"><code data-page-node-id="gTUztbLKQ4GpUrr6lWuDo3">POST /approvals</code> + <code data-page-node-id="syJtcj6nxFBRZci9zH3VOm">POST /approvals/preview</code></td><td class="err" data-page-node-id="IzpDObwaLzzTUehDSNBpFL">❌</td></tr>
+<tr data-page-node-id="zNA07VCjEYgJhzw4GZk2ta"><td data-page-node-id="wghtGuMikUQ6BdRdMdnTt6">办理 / 转办 / 加签 / 撤回 / 抄送 / 重试</td><td data-page-node-id="kDQ9rHtIeBM29QMaEOKgYp"><code data-page-node-id="fdBk8QVFTofNI2raG24pOR">:id/act</code>、<code data-page-node-id="s9j7SRVG18siCaoCTyzdyx">transfer</code>、<code data-page-node-id="M5GgfQdlE3u5EEWWr7AiFZ">addsign</code>、<code data-page-node-id="oZaRIDxxEDi3WoMD9utdtR">withdraw</code>、<code data-page-node-id="fxGWLH84evlC0STbcGuZbr">cc</code>、<code data-page-node-id="iMNM5Nv75Z81meZTjRhKMl">retry</code></td><td class="err" data-page-node-id="6Zs9EKu1L3zDDEB008Kjrp">❌</td></tr>
+<tr data-page-node-id="q272Rmlmf3QYsVCeIrtbCE"><td data-page-node-id="PfVBdPzQtsGBiyROTvnSBB">委托（出差代办）</td><td data-page-node-id="DiQinId7Lo8sbVWTMOZ4at"><code data-page-node-id="OHyXlQa9cwOi3sVTWFeX4Z">/api/delegations</code></td><td class="err" data-page-node-id="H3u97Tv6xgqsqjhtRDfQL1">❌（仅有 collab/delegations 简单表）</td></tr>
+<tr data-page-node-id="AS4jOhtPFswCaMssn6KdS2"><td data-page-node-id="1hqkimvgGDH4G2dloDtVmS">催办 + 批量</td><td data-page-node-id="OJupDPhreaRpHwkQcqPGq8"><code data-page-node-id="7Esucj81NGi9oCGLYjp049">/batch-remind</code>、<code data-page-node-id="bnp1dQtz8HDjypFEImheaN">/:id/remind</code>、<code data-page-node-id="6NDHZmGxrNPCpbcZZr7k6J">/followups</code></td><td class="err" data-page-node-id="mIRxwEl3WEuObGZce361vI">❌</td></tr>
+<tr data-page-node-id="c9Abxb97p47mw5AAfpY7lC"><td data-page-node-id="Do0bDf4xBrDvSyucNBNPyH">运维治理（卡单 / 僵死 / 健康度）</td><td data-page-node-id="UG3UVvct1ks45MM3k7VHXQ"><code data-page-node-id="EaFL84BaEKzJWjWN2uUujm">/stuck</code>、<code data-page-node-id="1iu6lVdTD1tTZpZwf3mO8l">/stale</code>、<code data-page-node-id="sPc1enCriDyXWQmJJ7JN5h">/health/fix-*</code></td><td class="err" data-page-node-id="MCdGsu7iEpD9LqGGVSRiZ2">❌</td></tr>
+<tr data-page-node-id="h7uzUfa5B5MSzuDLQy3l3T"><td data-page-node-id="vXGblGNRO5mMVNy3WgxCHf">评论 / 收藏 / 打印</td><td data-page-node-id="yC9Benb6gqlH8Z1Oz6GCEq"><code data-page-node-id="AxmjXlGe7lrRwHicZlCA88">/comments</code>、<code data-page-node-id="t7Y3YNnqBUE9J2IjI6DlU7">/favs</code>、<code data-page-node-id="XhkktWA30ZBCxwvoaieDcp">/print/*</code></td><td class="err" data-page-node-id="fxsx950litAGcvHHMlTMYu">❌</td></tr>
+<tr data-page-node-id="QDY3VUXHmHBCAER3qOb2XU"><td data-page-node-id="VbACTCcMEU1tXstfyWGcxY">49 种审批类型定义</td><td data-page-node-id="TJUCRWgFcEkLwMOV5zFVJq"><code data-page-node-id="MV0G5wjNyCJLaiknBBhPIX">GET /approvals/types</code> + <code data-page-node-id="fwz5DAHHyq1npeqyCmRWwR">all-types</code></td><td class="err" data-page-node-id="bv0huP0RVqpBZJ7saiSW9x">❌</td></tr>
+</tbody>
+</table>
+<div class="box" style="background:#fff5f5;border-color:#ffcdc6;" data-page-node-id="kB3EEwQ9Axvi3W0oWgtRdV">
+<b data-page-node-id="HNW1z7UUoCFQ83u921qLZg">迁移工作量评估：⭐⭐⭐⭐⭐</b> 这是参考项目的核心引擎，建表（approvals / approval_nodes / approval_logs / approval_types / approval_flows 等约 8-10 张）+ 状态机 + 流程图 + 委托 + 健康巡检 + 49 类型，需要 1-2 周独立专项。所有现有 <code data-page-node-id="ZyeLy9uyAGE22GY7lDnzPg">PUT /approve</code> 都要重挂到这个引擎上。
+</div>
+
+<h3 data-page-node-id="SyjsBS3aHLVLWa26yfpaS2">2.2 日常办公 · 参考 74 端点（最大单一缺口）</h3>
+<table data-page-node-id="G3WRBgbo0MctAeOILuSfBY">
+<thead data-page-node-id="mPi2bbfJ1dh3IsasuAUm5r"><tr data-page-node-id="J6JqAurIvRnNEVVoXATmse"><th data-page-node-id="vBoA7avugJUz0uj5lXALQA">子域</th><th data-page-node-id="naHCyNcVbeCPddJH2sYzui">参考端点</th><th data-page-node-id="8VGbFafejCQcBoAKB2GFXW">当前状态</th><th data-page-node-id="pnO76E13tRFgWHjdmN7Te8">实现位置</th></tr></thead>
+<tbody data-page-node-id="WPMZpdJgAn2xBFz5lLkGOi">
+<tr data-page-node-id="EhXskVMiAQXIt9WvaOr2yf"><td data-page-node-id="j6jULF05W7X0z09AwaEdsS">考勤设置（早晚班时间/弹性/规则）</td><td data-page-node-id="v0MTUOQq3A4B6AJel6ABgx">2</td><td class="err" data-page-node-id="mLpSzmVeO2q3D4VGfHJq5p">❌</td><td data-page-node-id="Ry1HvazqXxzow2eegXeEIh">—</td></tr>
+<tr data-page-node-id="Jf5nDufdQpK6VVM7u9PNAj"><td data-page-node-id="0G6U9sCBBJyjwPTR811UQE">打卡（in/out + 汇总 + 记录 + 导出）</td><td data-page-node-id="wgO3rz8hNJvyDvL3MtDsho">6</td><td class="warn" data-page-node-id="m59jiclVKooR3rBKbXZETM">⚠️ 简化</td><td data-page-node-id="SHpRsKnbonIdspZLmnW3mC"><code data-page-node-id="6AKm8rdjqsFZB8DdTtCA4d">checkin</code> 仅 2 端点，缺 summary/records/export</td></tr>
+<tr data-page-node-id="FiGe3q46QGlvaiXXYzUhwJ"><td data-page-node-id="kJmTZYqeF2lrsiKF2XRb3C">请假（含取消）</td><td data-page-node-id="2yaX64BuEh4IFukKHBVQpS">3</td><td class="warn" data-page-node-id="33KXVyZvMW5HujBhKhuFC7">⚠️ 简化</td><td data-page-node-id="YG4RDwWC2Tz1clwAMFnGud"><code data-page-node-id="3A2s0Ki9NN8EfMW9aWnrjQ">leave</code> 3 端点，缺 cancel</td></tr>
+<tr data-page-node-id="QgzgBn9mhVEXCmIayCv1Mj"><td data-page-node-id="e9Xb0xzTuqLaX7sAlCgwHE">加班 / 补卡</td><td data-page-node-id="Urfb8uyDIajmu1srpFnzPJ">4</td><td class="ok" data-page-node-id="achPqc3FTQw5QmJMOq5nE5">✅</td><td data-page-node-id="unGgSxQcuMgi08TxYIwrNN"><code data-page-node-id="EuwD6sT2FhQ18WWcORkfWq">collab/overtime</code> / <code data-page-node-id="ZW1HnBfnv9CmQFcYxlyoJI">collab/cardfix</code></td></tr>
+<tr data-page-node-id="paCYEQ2vwaz1IsBcSlhGvC"><td data-page-node-id="OvWOu5bjx7DHo5taRw8qzA">公告（含 unread/readers/remind-unread）</td><td data-page-node-id="FrsnmSzW1hw35MlCzjSSn0">9</td><td class="warn" data-page-node-id="1duwdMcN9w7Y8GcoDGbEkw">⚠️ 简化</td><td data-page-node-id="31RyIct9zQJ8nSjINeU8e2"><code data-page-node-id="wnwPaqDQB3VHF2Q3tCTvt2">announcement</code> 仅 5 端点，缺 unread/readers/remind-unread</td></tr>
+<tr data-page-node-id="B3tvtlBFTYhsImS6AUaaDj"><td data-page-node-id="TxSXJVIPM5w0YUXPUcndRt">用品申领（台账 + 申请 + 我的）</td><td data-page-node-id="vUEmjjwi8wRp8f5Qaj7vk2">6</td><td class="err" data-page-node-id="lPam5cepCLnkvwSJP0mgAu">❌</td><td data-page-node-id="Ft1qpGp9ZBO2eVyTS2WR7I">—</td></tr>
+<tr data-page-node-id="txufD2aJ0GKeDDNN5q01DV"><td data-page-node-id="DKabrFAWgH2YuTlnhTflmx">会议室（预订 + 取消）</td><td data-page-node-id="TbAeXDno51J7pDHgIKP9uU">5</td><td class="ok" data-page-node-id="SI5152o8IcdI4xNtSQzVq1">✅</td><td data-page-node-id="xE6VNxZfBXgufzmGhH3jG6"><code data-page-node-id="1iyjzJ5v5mG9RLgqY5OBBY">collab/rooms</code></td></tr>
+<tr data-page-node-id="zdbZuHFxDohpEBcKagR7op"><td data-page-node-id="RxtZRPc8t230W7YWRAcJH8">车辆申请</td><td data-page-node-id="Qk2AREQa5RKoJ13s8cEk5d">2</td><td class="err" data-page-node-id="sWBPuxnSjTkgovnpd3pW8h">❌</td><td data-page-node-id="jEzHZK5FU24dMz7uy64abc">当前只有 <code data-page-node-id="1EZ5eILYprTB9Dt1WHDjg5">logistics/vehicles</code> 台账，无申请流</td></tr>
+<tr data-page-node-id="8HXRbgVPjPBFszkNXOrrJJ"><td data-page-node-id="xj8hccJRBkOv8910TU4AGl">资产台账</td><td data-page-node-id="aHKvZIiDcpAlyFNDoMyPNN">3</td><td class="err" data-page-node-id="TEunWikTmSimyQfOPswbVY">❌</td><td data-page-node-id="dp8iLCqX5uqhvGIvlNUqRH">—</td></tr>
+<tr data-page-node-id="XJ8UNhuovofdgprV9j9ApX"><td data-page-node-id="uCYAuNbgwbZ9JJX27w9R1r">费用报销（含取消）</td><td data-page-node-id="NWV8Aos5DYjq0jpOIoFIi6">3</td><td class="warn" data-page-node-id="PWLaKLO6gQtKWkrotBG5HP">⚠️ 简化</td><td data-page-node-id="8YwZy6S6CURjcoBxq6Hp1A"><code data-page-node-id="SaiBdJ4PVQOkiNTbCP3Roh">expense</code> 缺 cancel</td></tr>
+<tr data-page-node-id="X0kqNibu70Noe7vK255FDK"><td data-page-node-id="4UGVlSkvZgIf3bDoDeDVjE"><b data-page-node-id="t2mHqCyGdL5FqnO7zINWII">工作报告</b>（模板 + 批阅 + 指导 + 抄送 + 部门汇总 + 问题 TOP + 导出 + 催交 + 日程）</td><td data-page-node-id="jeHu9JpeACOaeI9qNMtpxW"><b data-page-node-id="fBDXHvDbSo1Ze4Rwo0VJec">22</b></td><td class="err" data-page-node-id="VTMPPbbD8dmfVn60wkMq1Z">❌</td><td data-page-node-id="R5Ssn6t8o5JT2WTvI1O0g8">—（当前 <code data-page-node-id="j7CUVfhqqw8uO4Zd75Co2R">report</code> 只有 4 个，是工作汇报通用表，不是日报）</td></tr>
+<tr data-page-node-id="lkoT0cU1bBVRQqAdzameoH"><td data-page-node-id="6GPBohokpyl7HN7bW60zuC">出差（含 stats/finish/cancel）</td><td data-page-node-id="10VlAu6X1lAbmqiFsKnP0e">5</td><td class="warn" data-page-node-id="GTFGZ4wsqBd3BuvJxq2ZY3">⚠️ 简化</td><td data-page-node-id="aakqQuD1JB54iCTi9ETIWu"><code data-page-node-id="PyxR3zjyyuudSdQCWaFaD5">trip</code> 缺 stats/finish/cancel</td></tr>
+<tr data-page-node-id="3WFhFqIR9EQHJqOMvyZB6X"><td data-page-node-id="0vKzoRypCj0Idd9gwY1Z1a">备用金（申请 + 支付 + 报销 + 确认）</td><td data-page-node-id="KO8vU4ILZFRkTL0Rt5pPbi">7</td><td class="err" data-page-node-id="AWoQJS5mbJXSa7TMKcH0te">❌</td><td data-page-node-id="UQOKZqbHwEa3IdqzUD5L83">—</td></tr>
+</tbody>
+</table>
+<div class="box" style="background:#fff5f5;border-color:#ffcdc6;" data-page-node-id="KEn0ncXX8AyoK7gjOdEpRH">
+<b data-page-node-id="YZZWMJj6cdr22AQGkEbMzS">迁移工作量评估：⭐⭐⭐⭐</b> 需建 6-8 张表（attendance_settings / supplies / supply_apps / vehicle_apps / assets / petty_funds / work_reports 家族），补约 50 个端点。其中工作报告是单点复杂度最高的（22 端点，含批阅指导意见流 + 部门汇总算法 + 抄送 + 催交），建议独立成专项。
+</div>
+
+<h3 data-page-node-id="SWCQ1eU8bVYL91cRuTDc3k">2.3 数据服务 datasvc · 参考 8 端点（评估偏弱）</h3>
+<table data-page-node-id="Ow8IIO5NSBaZfn5u4bcYfF">
+<thead data-page-node-id="NBHVkoquQ1YWJQDLfMFBK8"><tr data-page-node-id="MzhySIufvkz0kY5tA270hv"><th data-page-node-id="GJgm6kBJrnVqkfvJLBU1TI">端点</th><th data-page-node-id="mKdCm1Xu8g6fwHrAwC5gxN">用途</th><th data-page-node-id="9WqPH8ijCAe7ckgP9cp8pQ">当前状态</th></tr></thead>
+<tbody data-page-node-id="6TaM2D0rPWd4PsEG3Jgy8N">
+<tr data-page-node-id="VXd5Lg2o1vYdF28z7pEUCX"><td data-page-node-id="a6sxN9jvN5BCwx8HEO7JIM"><code data-page-node-id="saUlLbr3CRMV9GWDLV52VZ">GET /dsvc/get_user_dashboard_data</code></td><td data-page-node-id="UBBxZ5ZQVnC0X6DZDJ044M">个人仪表盘数据</td><td class="err" data-page-node-id="FKMXsWBXueur1xDwoXgJJp">❌（当前用 stats 路由）</td></tr>
+<tr data-page-node-id="AY0Yj9sObn5txIybF0sIoJ"><td data-page-node-id="5xVAYqc0U1DrEsEp3dKuGe"><code data-page-node-id="tGp88mP6AT8ScwIJGMlf0p">GET /dsvc/cross_dept_snapshot</code></td><td data-page-node-id="CKjfDMVNuLeXlqYc6oF4ue">跨部门快照（跨表汇总）</td><td class="err" data-page-node-id="frRCOYJsvL1ZOmQFoEiGph">❌</td></tr>
+<tr data-page-node-id="do8D3ayOlTkeaOYJrrC7c3"><td data-page-node-id="zXEFxvasbthOTbMro6NSrb"><code data-page-node-id="vAoxLeVO2c427Ds53xOAKg">GET /dsvc/svc_audit</code></td><td data-page-node-id="4YGE8iathSq35ozDbGCgwP">服务调用审计</td><td class="err" data-page-node-id="zCaCXrIsB4pNJ26xI1eNFr">❌</td></tr>
+<tr data-page-node-id="bSBZe5tSWx5bHvblUpJgCa"><td data-page-node-id="Kw4ChzRWuCCaKjTZquvLxw"><code data-page-node-id="rZzpUMe7n49xUAz1yUX2sh">GET /dsvc/field_permissions</code> / <code data-page-node-id="hcENgVxYCDRUo3IHRSXwCN">PUT /:id</code></td><td data-page-node-id="9kXuq2UMT86DO8OJszqg6s">字段级权限</td><td class="err" data-page-node-id="GUDdLpLP7nsyj8etX8HGQG">❌（参考项目有完整的字段级权限引擎，B 只有 module 级）</td></tr>
+<tr data-page-node-id="n2vhPhmug66t7DNEcYfoWf"><td data-page-node-id="3hLjMNEoDuLhGChi4CAjr2"><code data-page-node-id="x6AQ2EzU2MOeWjMCUkm644">GET /dsvc/compliance</code></td><td data-page-node-id="dPGRCw6PlZbLenKlJEFBLS">合规检查</td><td class="err" data-page-node-id="SghJIblr9RgvalVoZyeyKI">❌</td></tr>
+</tbody>
+</table>
+<div class="box" data-page-node-id="aZ2w8aPcPlhfTOD97eal8D">
+<b data-page-node-id="JwL4FNaREbsdKkCx2RPB34">迁移工作量评估：⭐⭐⭐</b> 字段级权限最有价值（约 4 端点 + 1 张表 + 权限引擎中间件）。其他 4 个端点可作为 dashboard 增强。
+</div>
+
+<h3 data-page-node-id="br9FhHNbf36nvPYHvQMDI3">2.4 预算管理 budget · 参考 6 端点（完全未建）</h3>
+<table data-page-node-id="8vB2lw2usBFl0qKqf1J11g">
+<thead data-page-node-id="wVdSYJtUKaDgmMHultI0Az"><tr data-page-node-id="ejdjkEDQqw3J9BlhZ7PO8g"><th data-page-node-id="wltDdUgXqW2Tpkly4oUxww">端点</th><th data-page-node-id="vjWPQDFt5SNYg60LM5vZ3f">当前状态</th></tr></thead>
+<tbody data-page-node-id="7ohK658Mnvfig1kTzmIdbW">
+<tr data-page-node-id="SLSB2V1T5Ujk2IKixzZCTy"><td data-page-node-id="AloxZ3dUWcqGJudbxgIgIq"><code data-page-node-id="K0TcsbyKhBn2mCYgVrf7kf">GET/POST /budgets</code> + <code data-page-node-id="dlv4UpEY57e3ZEjetdGFcE">categories</code></td><td class="err" data-page-node-id="AccTKPS1rkyixxJ52jdXEz">❌</td></tr>
+<tr data-page-node-id="oxcam1qw43zFAZXiP5pViE"><td data-page-node-id="9OtkAHnZUDQ0jtJDqKYI0B"><code data-page-node-id="TSEONSWQ78iA6WwCslAGvf">GET/POST /budgets/executions</code>（预算执行流水）</td><td class="err" data-page-node-id="OYk8NdTC9ymesBZHZ7EZhh">❌</td></tr>
+<tr data-page-node-id="IbpVAsly5MEctyE7OVROcE"><td data-page-node-id="LCRQAqlz41grEACzdLWz3A"><code data-page-node-id="ukFyPJN1Z5i58F0qnQLVgk">GET /budgets/stats</code>（执行率/剩余/超支）</td><td class="err" data-page-node-id="4I0bIgaWiAjTOdBeCV9cOE">❌</td></tr>
+</tbody>
+</table>
+<div class="box" data-page-node-id="xb5JPle8pqBIQGBAd2v8xE">
+<b data-page-node-id="v4FE98YP1DhFnoHj4DmgUm">迁移工作量评估：⭐⭐</b> 约 6 端点 + 1 张表 + 状态联动（bizflow 凭证 → 预算扣减），独立 1-2 天。
+</div>
+
+<h3 data-page-node-id="pMNQHOKc44FB5CAMi0u496">2.5 支付/分成 payout · 参考 4 端点（完全未建）</h3>
+<table data-page-node-id="HJvmNRAJXO9f3IjBUbjOp1"><thead data-page-node-id="w67n0S7vCWhE0YrPDHjDAo"><tr data-page-node-id="4urJOnLIBy7nnWT1Cnz4rE"><th data-page-node-id="lG1dFIyHOtqXzBEJryOqw2">端点</th><th data-page-node-id="XuCgGkwauHSA6hs2oAEkv0">当前状态</th></tr></thead>
+<tbody data-page-node-id="XrEgjIrCHTEVMWfNvNg8k6"><tr data-page-node-id="KguH95fXFxW7StYiDMEt5C"><td data-page-node-id="AEvw3YQxnbhrwYoZhUWDQR"><code data-page-node-id="oxEGAfn9F9CBqhwQfY6jBX">GET/POST /payout/payouts</code> + <code data-page-node-id="5tnLNJfitE1Fhcrv87PPEG">:id</code> + <code data-page-node-id="1pKJielioGIE860uhZJG81">/sources</code></td><td class="err" data-page-node-id="KXlUQebtDBvn5Q7AHQBsJG">❌</td></tr></tbody></table>
+<div class="box" data-page-node-id="yf6AEbldCV3jlNBzEKqRXq">
+<b data-page-node-id="dxlFG1tFLRDU9PrCN4GvdX">迁移工作量评估：⭐</b> 4 端点 + 1 张表，独立半天。
+</div>
+
+<h2 data-page-node-id="0LAbOJrxeDtxVTAcKo17Ym">三、🟡 中缺口 · 小功能点缺失</h2>
+
+<table data-page-node-id="jSySopvX7VUHdHWkRBizpX">
+<thead data-page-node-id="RH0hUHffx47HLIu0XHjGto"><tr data-page-node-id="GcuF6CIArELm5rTnZQrOB9"><th data-page-node-id="43tK5cj2CJBE8aQMwHknkl">当前模块</th><th data-page-node-id="KHyymRgHEnM5g7CQCv0ony">参考端点</th><th data-page-node-id="NRw98GJ8LWINU5z3RdHjNM">缺口</th><th data-page-node-id="FpnG0bl38NzG9FSgDnYDlp">难度</th></tr></thead>
+<tbody data-page-node-id="HZKSA0Ln0QExATHo2sidze">
+<tr data-page-node-id="cF3C72Rk1X7f64tSPd8rBa"><td data-page-node-id="tx1ZZ1v4mMToUQiQuSrx29">合同 contract</td><td data-page-node-id="BUDZ3ljLnplAkKBgey7TE5">24 端点（mgmt/hr/tpl）</td><td data-page-node-id="t55OYg8BQZ8qhq0DrNoq8b">人事合同（contract/hr）当前由 hrExt 简化覆盖；合同库 / 合作方 / submit/file/status 流转细节缺</td><td data-page-node-id="XvTD5pLbPzuLBptjx0cwzS">⭐⭐</td></tr>
+<tr data-page-node-id="yO7wyQA89JGRqxyBqzhwMJ"><td data-page-node-id="h3f2Iocu9aVfU2V1c1hXNC">知识库 doclib</td><td data-page-node-id="gkoJqX2Dtx8KhriTmxXjnI">office 22</td><td data-page-node-id="nzPuzNHxI1EYFho8OZdpJ4">合同档案 <code data-page-node-id="5DAFQPeBw0nlwNO6jBemvp">contract-archives</code>（含 expiring）B 未建；公司文档 <code data-page-node-id="vXIsOqQBhSWky37Cw5OARw">docs</code> 7 端点 B 的 document 简化（无 revoke/download）</td><td data-page-node-id="zeLry3c5m9KXvv6IH0lrKi">⭐⭐</td></tr>
+<tr data-page-node-id="2GdC43cP7kHyEemYDLUnAB"><td data-page-node-id="7iRQOV9waXtW2Sa9COB6jH">认证授权 auth</td><td data-page-node-id="QLiUnew9lI0eewStqCvCOU">16</td><td data-page-node-id="KBPHd1pOUPTPzDgLu70B8N">RBAC 角色权限矩阵（<code data-page-node-id="nBggpuJbmG7bqW9MLFiwK2">PUT /auth/org/rbac/:role/:module</code>、<code data-page-node-id="FrFZ8QYNQ9kvQQ38URGxj2">rbac/emps</code>、<code data-page-node-id="LixB9pzcmHNo4BE0fXuRuX">rbac/emp/:id</code>）B 当前只有简单 permission 表</td><td data-page-node-id="3pVPe9XHpWRXZYRPzGkarO">⭐⭐</td></tr>
+<tr data-page-node-id="9qsBzF93bwgtm86Twrj8Z1"><td data-page-node-id="rF6Z4gkYQjdoGkT5EA02fG">客户 crm</td><td data-page-node-id="83vTf6fEhrwJa1rQh1tsnw">26 端点</td><td data-page-node-id="AAeaYUbtP6BRorkjAzGK5X">缺 <code data-page-node-id="4pRpOSE3AIsiyZuOzvdDBH">sleeping</code>（沉睡客户唤醒）、<code data-page-node-id="XAFMddswrHKXNUeLHoZOD8">tier</code> 单独升级、<code data-page-node-id="vFXvn9Ej2W1s9Kl95Y2EEX">pool</code> 客户池、<code data-page-node-id="2IfN8AE3AOXSEnjbCleyAh">visits</code>（B 部分由 aftersale 覆盖）</td><td data-page-node-id="22BEsO6RSNbjDFcObUKADa">⭐</td></tr>
+<tr data-page-node-id="vGcvCDKNEax2VwJpwK6P6B"><td data-page-node-id="n4drL44dt2YiL1GwckU6gk">采购 procurement</td><td data-page-node-id="W2DC4Sl7Eh02msxkN8mcR9">15</td><td data-page-node-id="Nb5GSlD6bbrAzNdffnXIoz">采购收货 <code data-page-node-id="84763I7cyNabJ4cFxPjEeH">receipts</code> 当前缺（仅 purchase 表）；ap-ledgers 简化（无 pay）</td><td data-page-node-id="EyImqwefj8t92EakE053Yr">⭐</td></tr>
+<tr data-page-node-id="mC6sn1k1JcNeWQq4breiLc"><td data-page-node-id="yXqrJFAeKZKVy5skaJ95xg">财务 finance</td><td data-page-node-id="txRn9TCEhcNYFy86FNYQ2S">6</td><td data-page-node-id="Qw4KIYPFwAipJhhxcej517"><code data-page-node-id="hdyJ43fiSUfTLhiZtx9iBj">ar/warnings</code>（账龄告警）+ <code data-page-node-id="EGTwVdTpkynl9axI7uKmpV">payments/voucher</code>（付款-凭证关联）B 未做</td><td data-page-node-id="zOnv15pkrtzEWP4m1Mw4Ob">⭐</td></tr>
+<tr data-page-node-id="Q7FppdhdlGppyxFv2U3ti4"><td data-page-node-id="lOnIjjBPSBs8s8XRJeWqUu">报表 reports</td><td data-page-node-id="dUXYc0iUC8if0pugD7kxc5">8</td><td data-page-node-id="7RhdhM1fd4d87B9x9qF1Pa">业务报表（销售/经销商/商机/逾期）当前由 <code data-page-node-id="FxfXos2lO2apNFegDyXsz0">report</code> 简化覆盖；缺导出/钻取</td><td data-page-node-id="Sl3MBCvxq2uGk4DixSDHtw">⭐</td></tr>
+<tr data-page-node-id="cBLoiNjaSM7mgvw2osidWu"><td data-page-node-id="ZZHK6F6YNG5vC2jlSKgFvD">组织变更 orgchange</td><td data-page-node-id="RNnE6P99CDYuyj0ORxyFmL">4</td><td data-page-node-id="tUxqwYTQ9arceiuNNuUQWZ">缺 <code data-page-node-id="HlFQYIJnjSm5IzlxH2EffX">/changes/:id</code> 详情 + 真正的审批环节持久化（当前是简化版）</td><td data-page-node-id="REKEwiRuSbrvlg7KFjCQCc">⭐</td></tr>
+<tr data-page-node-id="QWrlNa3g2aDqgaWLAL8BLV"><td data-page-node-id="vvIXuKqBqwN7ERYdctxrwe">业务协调 coord</td><td data-page-node-id="LKvGTXHToURN9KR0Kl6vJA">8</td><td data-page-node-id="zQiOk6mSBLLXToBN2phpNI">缺断点「合同→开票→回款」关联规则</td><td data-page-node-id="X0HIglNekvOcVzrL02cpkE">⭐</td></tr>
+<tr data-page-node-id="YqXWMiXkz5Dv4zn1AR5KXb"><td data-page-node-id="Hgq2jrE2Ix0GefT2TwfxGR">审计 audit</td><td data-page-node-id="OXplVa8K6DYWwKq7CBMvX3">9</td><td data-page-node-id="LuuEzD79mTbyACRZhQRfbR">缺归档预览 <code data-page-node-id="09zAjSggvL7Aj31gemx6Ls">archive/preview</code> + 下载 <code data-page-node-id="XetN8f0N0Ezzs4vbX8KTLb">archive/download</code></td><td data-page-node-id="rtQycWJCaRTDHJEH7Gnm60">⭐</td></tr>
+</tbody>
+</table>
+
+<h2 data-page-node-id="BA2pCH8SAHhlZ7B5qNjXUX">四、🟢 已迁模块内部逻辑深度抽查</h2>
+
+<p data-page-node-id="Ld3T9EVn04GiFpQ5Bt0SME">为确认已迁模块不是空壳，随机抽 4 个核心模块核对关键业务规则：</p>
+
+<table data-page-node-id="ew46leyApjWbyuG4ynCWj9">
+<thead data-page-node-id="AP3RqK071VUjgPdugpEArs"><tr data-page-node-id="mctIFpRcMHLhvkMtH6WTH5"><th data-page-node-id="5QhnePCM18QjD3kde96quw">模块</th><th data-page-node-id="m1y3Y4LXakipiTsbR8VDmT">代码量</th><th data-page-node-id="pVvNNT7vgXBb4elejOCr1p">关键业务规则</th><th data-page-node-id="gvda3ui6J3vYjuR8tlZFE2">实现质量</th></tr></thead>
+<tbody data-page-node-id="IS9h4DmIco5EZ7icW5sh1a">
+<tr data-page-node-id="36dvtO8HpRS8nzpoTcaFmE"><td data-page-node-id="yWYf6wh5iqK033UMetVqv3">bid.controller.js</td><td data-page-node-id="Ku2ciEwDMCjXciyArNyE9l">889 行 / 40 端点</td><td data-page-node-id="lWH19RATLWBmICBxKHF0y3">章节 CRUD + 知识库 50 条种子 + 评审（评分写 <code data-page-node-id="cxEFOJ4ihy6iunFsJXrxQ3">comment</code>）+ 授权 + 全文导出</td><td data-page-node-id="X6trSxrasZghxEVOxs6apQ"><span class="tag ok" data-page-node-id="d8QU4SZTYFxpIY2AI0nV0b">实</span> 明确注释 Word 导入导出需装依赖</td></tr>
+<tr data-page-node-id="4sqlYRZ9H83mzgn8pm3sXM"><td data-page-node-id="27olFkIPI3AjOcPCmYdpey">dealer.controller.js</td><td data-page-node-id="RtUC28fQzKNVQwEizyNJqY">336 行 / 17 端点</td><td data-page-node-id="nbdjTpp1FwAfXOf8SwyOzU">五项准入评审（证照/质量/资金/渠道/合规 + 85 分门槛）+ 草稿→评审中→合格状态机 + 产品线授权</td><td data-page-node-id="P5u1PMhFgFmAXMG1ESRPOQ"><span class="tag ok" data-page-node-id="xI70CuzlI9TpxZOQruOwsR">实</span> 状态机有真实校验</td></tr>
+<tr data-page-node-id="TDk3CoxMflUj1BAYHrZhmu"><td data-page-node-id="ytdkKwpZXLv8rqEzyN1but">collab.controller.js</td><td data-page-node-id="1lZKdDOc7phZh3RGqdTyj4">616 行 / 32 端点</td><td data-page-node-id="9hLiNRGV1tMQDNHX9odcOP">会议室预订冲突检测（字符串 HH:MM 时间段重叠校验）+ 委托 + 补卡 + 加班</td><td data-page-node-id="xUyBQp3rPq6topAkFXrDgm"><span class="tag ok" data-page-node-id="S9bPLoul2pbYCDvvlYGrpb">实</span> 冲突检测有真逻辑</td></tr>
+<tr data-page-node-id="bqxq7CS1f7FRPNiA2vE9kY"><td data-page-node-id="sIEJBdCJSoUasG3lPqhSFQ">invoicing.controller.js</td><td data-page-node-id="y3053AA0g267GDvhwn6hBB">774 行 / 29 端点</td><td data-page-node-id="fBgfTbhfNqjGtlThAWpWEv">红字冲销（负数红字记录）+ 销售退货联动应收/收入/成本 + 账龄分析</td><td data-page-node-id="jy7JAb7bTYH6aBv0OgopYT"><span class="tag ok" data-page-node-id="WKZn7IksMsXEUAZflZd9IO">实</span> 借贷分录有真逻辑</td></tr>
+</tbody>
+</table>
+
+<p data-page-node-id="HIHgAP6YLHhuENFNAcAFL3">结论：抽查的 4 个模块都是「业务规则真实落地」级别的实现，不是空壳。</p>
+
+<h2 data-page-node-id="H0cGJpTAsL0Woho7NiqVrd">五、整体结论与建议</h2>
+
+<div class="box" data-page-node-id="SSJqE13mUvHTqR9rUSndYy">
+<b data-page-node-id="D6PEwTgnHJKhNRD0INjakE">迁移完成度 ~65%（按端点覆盖与业务深度综合估算）</b><br data-page-node-id="fLsSgg3wmcrlXLGZlkg3SS">
+- 26 个新增模块合计 401 端点，参考对位 ~360，对位率 ~90% ✅<br data-page-node-id="ZztHHKNOz48iGSGSXAKaYp">
+- 抽查 4 个核心模块业务规则真实落地（不是空壳）✅<br data-page-node-id="bQ0ZiAZxCgzc1iIGkvvaYx">
+- 4 大缺口（<b data-page-node-id="aIXHbVXNn2wiPSNo8noFkA">审批中心 49 端点 / 日常办公 74 端点 / 数据服务 8 端点 / 预算 6 端点 + 支付 4 端点</b>）= 141 端点未覆盖 ❌<br data-page-node-id="xHvzpLzzI0WlvYR7fkBPtG">
+- 10+ 个中缺口分散在合同/公文/权限/采购/财务/报表，单点 1-6 端点 ⚠️
+</div>
+
+<h3 data-page-node-id="wCfZVMWhul7gDmBN94GQ8Z">建议推进顺序</h3>
+<ol data-page-node-id="HLsuWh1sAlavmYmAU8tCdv">
+<li data-page-node-id="DlYI6UWMnUC7gfTMBekcGi"><b data-page-node-id="qureFYGqL4jGLcrLIRZq9a">先做审批中心（最关键）</b>——它是参考项目所有业务模块的审批出口。做好了，现有 7 处 <code data-page-node-id="x2CO0lBiN8C5b2SIYBTim3">PUT /:id/approve</code> 都能挂上去，B 系统才真正闭环。1-2 周独立专项。</li>
+<li data-page-node-id="nrMzV0IANxHfECe711zqLr"><b data-page-node-id="gl7q6m2MHG7qfw9olxFOrI">再做日常办公</b>——其中工作报告独立成专项（22 端点），其余合并 1 周。重点是用品/车辆/资产/备用金 4 个台账 + 工作报告日报流。</li>
+<li data-page-node-id="O9Tql0OcQHVnyprj8WWHro"><b data-page-node-id="zKMMWxmjWaJRp7fjB4AZ3a">预算/支付 1-2 天补齐</b>，体量小，依赖 bizflow 凭证回写。</li>
+<li data-page-node-id="8Yh8Ltui9zm1NJCXDsyH3x"><b data-page-node-id="kAXqHqDQmOuew8cWC9VKvw">中缺口合并到日常维护</b>，每发现一个补一个，无需专项。</li>
+</ol>
+
+<p class="mute" style="margin-top:30px" data-page-node-id="qJaT2vBCSVCHtUN8V7va8F">— 报告完 —</p>
+
+</div>
+</body>
+</html>
