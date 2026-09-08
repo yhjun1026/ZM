@@ -88,3 +88,36 @@ function remove(req, res) {
 }
 
 module.exports = { list, create, approve, remove, toTrip, computeStats };
+
+function statsRoute(req, res) {
+  try {
+    const total = db.prepare('SELECT COUNT(*) c FROM business_trips').get().c;
+    const ongoing = db.prepare("SELECT COUNT(*) c FROM business_trips WHERE status='出差中'").get().c;
+    const finished = db.prepare("SELECT COUNT(*) c FROM business_trips WHERE status='已完成'").get().c;
+    const month = db.prepare("SELECT COUNT(*) c, COALESCE(SUM(days),0) d FROM business_trips WHERE start_date >= date('now','start of month')").get();
+    return res.json(success({ total, ongoing, finished, month_count: month.c, month_days: month.d }));
+  } catch (e) { return res.json(fail('查询失败')); }
+}
+
+function cancel(req, res) {
+  try {
+    const r = db.prepare('SELECT * FROM business_trips WHERE id=?').get(req.params.id);
+    if (!r) return res.json(fail('记录不存在'));
+    if (r.user_id !== req.userId) return res.json(fail('只能撤销自己的'));
+    if (!['待审批', '审批中'].includes(r.status)) return res.json(fail('仅待审批可撤销'));
+    db.prepare("UPDATE business_trips SET status='已撤销' WHERE id=?").run(req.params.id);
+    return res.json(success({}, '已撤销'));
+  } catch (e) { return res.json(fail('操作失败')); }
+}
+
+function finish(req, res) {
+  try {
+    const r = db.prepare('SELECT * FROM business_trips WHERE id=?').get(req.params.id);
+    if (!r) return res.json(fail('记录不存在'));
+    if (r.status !== '出差中') return res.json(fail('仅出差中可结束'));
+    db.prepare("UPDATE business_trips SET status='已完成' WHERE id=?").run(req.params.id);
+    return res.json(success({}, '已结束'));
+  } catch (e) { return res.json(fail('操作失败')); }
+}
+
+module.exports = { list, create, approve, remove, toTrip, computeStats, statsRoute, cancel, finish };

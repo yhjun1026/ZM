@@ -1,0 +1,11 @@
+const router = require('express').Router();
+const c = require('../controllers/pettyFund.controller');
+const wrap = (fn) => (req, res, next) => { try { fn(req, res, next); } catch (e) { res.status(500).json({ code: 500, success: false, message: e.message }); } };
+router.get('/stats', wrap(c.stats));
+router.get('/', wrap(c.list));
+router.post('/', wrap(c.create));
+router.put('/:id/cancel', wrap(c.cancel));
+router.post('/:id/pay', wrap(c.pay));
+router.post('/:id/settle', wrap(c.settle));
+router.post('/:id/confirm', wrap(c.confirm));
+module.exports = router;

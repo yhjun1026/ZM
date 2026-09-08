@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const c = require('../controllers/supplyApp.controller');
+const wrap = (fn) => (req, res, next) => { try { fn(req, res, next); } catch (e) { res.status(500).json({ code: 500, success: false, message: e.message }); } };
+router.get('/', wrap(c.listSupplies));
+router.post('/', wrap(c.createSupply));
+router.put('/:id', wrap(c.updateSupply));
+router.post('/apply', wrap(c.applySupply));
+router.get('/apps', wrap(c.listApps));
+router.put('/apps/:id/approve', wrap(c.approveApp));
+module.exports = router;

@@ -6,5 +6,6 @@ const { requireAction } = require('../middleware/rbac');
 router.get('/', asyncHandler(ctrl.list));
 router.post('/', asyncHandler(ctrl.apply));
 router.put('/:id/approve', requireAction('can_approve'), asyncHandler(ctrl.approve));
+router.put('/:id/cancel', asyncHandler(ctrl.cancel));
 
 module.exports = router;

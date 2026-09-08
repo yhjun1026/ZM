@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const c = require('../controllers/budget.controller');
+const wrap = (fn) => (req, res, next) => { try { fn(req, res, next); } catch (e) { res.status(500).json({ code: 500, success: false, message: e.message }); } };
+router.get('/', wrap(c.list));
+router.get('/categories', wrap(c.listCategories));
+router.post('/', wrap(c.create));
+router.get('/executions', wrap(c.listExecutions));
+router.post('/executions', wrap(c.createExecution));
+router.get('/stats', wrap(c.stats));
+module.exports = router;

@@ -1,0 +1,10 @@
+const router = require('express').Router();
+const c = require('../controllers/datasvc.controller');
+const wrap = (fn) => (req, res, next) => { try { fn(req, res, next); } catch (e) { res.status(500).json({ code: 500, success: false, message: e.message }); } };
+router.get('/get_user_dashboard_data', wrap(c.getUserDashboardData));
+router.get('/cross_dept_snapshot', wrap(c.crossDeptSnapshot));
+router.get('/svc_audit', wrap(c.svcAudit));
+router.get('/field_permissions', wrap(c.listFieldPermissions));
+router.put('/field_permissions/:id', wrap(c.updateFieldPermission));
+router.get('/compliance', wrap(c.compliance));
+module.exports = router;

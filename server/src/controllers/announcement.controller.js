@@ -101,3 +101,42 @@ module.exports = {
   reject,
   get
 };
+
+function unread(req, res) {
+  try {
+    const rows = db.prepare(`SELECT * FROM announcements WHERE status='已发布' AND id NOT IN
+      (SELECT announcement_id FROM announcement_reads WHERE emp_id=?) ORDER BY id DESC LIMIT 50`).all(req.userId);
+    return res.json(success(rows));
+  } catch (e) { return res.json(fail('查询失败: ' + e.message)); }
+}
+
+function markRead(req, res) {
+  try {
+    db.prepare('INSERT OR IGNORE INTO announcement_reads (announcement_id, emp_id) VALUES (?,?)').run(req.params.id, req.userId);
+    return res.json(success({}, '已读'));
+  } catch (e) { return res.json(fail('操作失败')); }
+}
+
+function readers(req, res) {
+  try {
+    const rows = db.prepare(`SELECT r.emp_id, r.read_at, u.name, u.dept FROM announcement_reads r
+      LEFT JOIN users u ON u.id=r.emp_id WHERE r.announcement_id=? ORDER BY r.read_at DESC`).all(req.params.id);
+    return res.json(success({ list: rows, count: rows.length }));
+  } catch (e) { return res.json(fail('查询失败')); }
+}
+
+function remindUnread(req, res) {
+  try {
+    const a = db.prepare('SELECT * FROM announcements WHERE id=?').get(req.params.id);
+    if (!a) return res.json(fail('公告不存在'));
+    const unreads = db.prepare(`SELECT u.id, u.name FROM users u WHERE u.status!='离职' AND u.id NOT IN
+      (SELECT emp_id FROM announcement_reads WHERE announcement_id=?)`).all(req.params.id);
+    for (const u of unreads) {
+      db.prepare(`INSERT INTO messages (biz_type, biz_id, to_emp_id, title, content, msg_type, created_at)
+        VALUES ('公告', ?, ?, '公告阅读提醒', ?, '待办', datetime('now','localtime'))`).run(a.id, u.id, `请查阅公告「${a.title}」`);
+    }
+    return res.json(success({ count: unreads.length }, '已提醒 ' + unreads.length + ' 人'));
+  } catch (e) { return res.json(fail('操作失败: ' + e.message)); }
+}
+
+module.exports = { list, create, approve, reject, get, unread, markRead, readers, remindUnread };

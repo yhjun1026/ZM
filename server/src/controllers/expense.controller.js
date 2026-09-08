@@ -35,3 +35,16 @@ function approve(req, res) {
 }
 
 module.exports = { list, apply, approve };
+
+function cancel(req, res) {
+  try {
+    const r = db.prepare('SELECT * FROM expense_records WHERE id=?').get(req.params.id);
+    if (!r) return res.json(fail('记录不存在'));
+    if (r.user_id !== req.userId) return res.json(fail('只能撤销自己的'));
+    if (!['待审批', '审批中'].includes(r.status)) return res.json(fail('仅待审批可撤销'));
+    db.prepare("UPDATE expense_records SET status='已撤销' WHERE id=?").run(req.params.id);
+    return res.json(success({}, '已撤销'));
+  } catch (e) { return res.json(fail('操作失败')); }
+}
+
+module.exports = { list, apply, approve, cancel };
