@@ -21,15 +21,16 @@ const config = {
   publicDir: process.env.PUBLIC_DIR || path.join(PROJECT_DIR, 'public'),
   webDist: process.env.WEB_DIST || path.join(PROJECT_DIR, 'web', 'dist'),
   cors: {
-    origins: (process.env.CORS_ORIGINS || 'http://localhost:8080')
+    origins: (process.env.CORS_ORIGINS || 'http://localhost:8080,http://127.0.0.1:8080')
       .split(',')
       .map((s) => s.trim())
       .filter(Boolean),
   },
   rateLimit: {
-    // 开发环境放宽（页面一次并行拉多个接口），生产可用环境变量收紧
-    global: parseInt(process.env.RATE_LIMIT_GLOBAL || (process.env.NODE_ENV === 'production' ? '300' : '2000'), 10),
-    login: parseInt(process.env.RATE_LIMIT_LOGIN || '5', 10),
+    // 开发环境放宽（页面一次并行拉多个接口），生产也保持宽松。
+    // 服务器侧若被反向代理/nginx 套娃，再通过 RATE_LIMIT_GLOBAL/RATE_LIMIT_LOGIN 环境变量收紧。
+    global: parseInt(process.env.RATE_LIMIT_GLOBAL || '600', 10),
+    login: parseInt(process.env.RATE_LIMIT_LOGIN || '10', 10),
   },
 };
 

@@ -9,6 +9,12 @@ services:
       - ./server/logs:/app/logs
     env_file:
       - ./server/.env
+    environment:
+      # .env 缺失时给一个保底值，避免生产模式 process.exit(1)
+      # 部署时务必在 server/.env 覆盖 JWT_SECRET 为强随机串
+      JWT_SECRET: ${JWT_SECRET:-please-change-me-to-a-strong-random-32-char-secret}
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 8080
     restart: unless-stopped
 
   web:
