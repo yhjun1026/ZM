@@ -2,7 +2,7 @@
  * 复用当前工程的 JWT 校验（与登录签发的 token 保持一致），
  * 但注入参考项目路由所期望的完整 req.user 字段（含 contract_role / avatarColor）。
  */
-const { verifyToken } = require('../utils/jwt');
+const { verifyToken, signToken } = require('../utils/jwt');
 const { fail } = require('../utils/response');
 const db = require('../db');
 
@@ -61,4 +61,9 @@ function optionalAuth(req, res, next) {
 // 参考项目部分路由从 middleware/auth 引入权限装饰器，这里从 rbac 再导出保持兼容
 const { requireModule, requireAction, requireApprove } = require('./rbac');
 
-module.exports = { authMiddleware, optionalAuth, requireModule, requireAction, requireApprove };
+function generateToken(user) {
+  // signToken(userId, role) 见 src/utils/jwt.js
+  return signToken(user.id, user.role || '');
+}
+
+module.exports = { authMiddleware, optionalAuth, generateToken, requireModule, requireAction, requireApprove };

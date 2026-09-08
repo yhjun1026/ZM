@@ -30,6 +30,17 @@ function authMiddleware(req, res, next) {
   } catch (e) {
     req.user = { id: decoded.userId, name: decoded.userId, dept: '', role: decoded.role };
   }
+  // 参考项目体系的员工 ID（employees.id，整数）。
+  // 当前项目 users.id 混合了数字（'28'）与工号（'ZM001'），而 009 迁移引入的参考项目表
+  // 统一用 employees.id 作为人员外键，这里做一次解析，业务代码用 empId(req) 取值即可。
+  try {
+    const row = db
+      .prepare('SELECT id FROM employees WHERE emp_no = ? OR CAST(id AS TEXT) = ? LIMIT 1')
+      .get(String(decoded.userId), String(decoded.userId));
+    req.empId = row ? row.id : (Number(decoded.userId) || null);
+  } catch (e) {
+    req.empId = Number(decoded.userId) || null;
+  }
   next();
 }
 

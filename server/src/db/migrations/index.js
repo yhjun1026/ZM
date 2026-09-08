@@ -8,4 +8,7 @@ module.exports = [
   require('./006_align_reference_org'),
   require('./007_reference_schema'),
   require('./008_reference_business_data'),
+  require('./009_ref_schema_full'),
+  require('./010_round2_schema'),
+  require('./011_round3_schema'),
 ];

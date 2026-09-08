@@ -45,7 +45,7 @@ app.use('/api/login', loginLimiter);
 
 // 认证：除 login/logout/health 外，所有 /api 需 JWT
 app.use('/api', (req, res, next) => {
-  if (['/login', '/logout', '/health', '/auth/login'].includes(req.path)) return next();
+  if (['/login', '/logout', '/health', '/auth/login', '/qywx/callback'].includes(req.path)) return next();
   authMiddleware(req, res, next);
 });
 
