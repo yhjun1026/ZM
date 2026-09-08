@@ -19,7 +19,7 @@
         </el-form-item>
         <el-button type="primary" :loading="loading" style="width: 100%" @click="onLogin">登 录</el-button>
       </el-form>
-      <p class="hint">演示账号：ZM001 / zm123456（总经理）· ZM006 / zm123456（超级管理员）· ZM019 / xz2026（普通员工）· ZM026 / cw2026（财务部）</p>
+      <p class="hint">演示账号：ZM001 / zm123456（总经理）· ZM006 / zm123456（超级管理员）· ZM019 / zm123456（普通员工）· ZM026 / zm123456（财务部）</p>
     </el-card>
   </div>
 </template>
